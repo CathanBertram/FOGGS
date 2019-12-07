@@ -98,7 +98,7 @@ private:
 	PlayerColl* _pacmanColl;
 	Tile* _tile[768];
 
-	//Data For Menu
+	//data for menu
 	Texture2D* _menuBackground;
 	Rect* _menuRectangle;
 	Vector2* _menuStringPosition;
@@ -107,11 +107,13 @@ private:
 	bool _pKeyDown;
 	bool _startGame;
 	bool _spaceKeyDown;
+
 	int score;
+	int highScore;
 	float scoreMulti;
 	int level;
 	int ghostCount;
-
+	bool debug;
 
 	char levelArr[768];
 

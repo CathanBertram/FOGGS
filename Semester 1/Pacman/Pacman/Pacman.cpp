@@ -31,7 +31,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 	_pKeyDown = false;
 	_startGame = false;
 	_spaceKeyDown = false;
-
+	
 	_pacman->_Direction = 0;
 	_pacman->_CurrentFrameTime = 0;
 	_pacman->_Frame = 0;
@@ -43,8 +43,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 	_pacman->dead = false;
 	_pacman->immune = false;
 	_pacman->health = 100;
-
-	scoreMulti = 1.0f;
+	debug = false;
 
 	ghostCount = 0;
 
@@ -53,6 +52,8 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 	pacmanProj = false;
 	roomClear = false;
 	score = 0;
+	highScore = 0;
+	scoreMulti = 1.0f;
 
 	// Start the Game Loop - This calls Update and Draw in game loop
 	Graphics::StartGameLoop();
@@ -160,6 +161,10 @@ void Pacman::Update(int elapsedTime)
 
 			//Confine Pacman To Screen
 			Pacman::CheckViewportCollision();
+			if (score > highScore)
+			{
+				highScore = score;
+			}
 		}
 	}
 	if (keyboardState->IsKeyDown(Input::Keys::ESCAPE))
@@ -176,7 +181,7 @@ void Pacman::Draw(int elapsedTime)
 
 	// Allows us to easily create a string
 	std::stringstream stream;
-	stream <<"Health: "<< _pacman->health<<"                     Score: " << score << "     Level: " << level;
+	stream << "Health: " << _pacman->health << "     Score: " << score << "     Level: " << level << "     High Score: " << highScore;
 	
 	SpriteBatch::BeginDraw(); // Starts Drawing
 
@@ -250,7 +255,7 @@ void Pacman::CheckCollision()
 			_munchies[i]->_position->X, _munchies[i]->_position->Y, _munchies[i]->_Rect->Width, _munchies[i]->_Rect->Height))
 		{
 			_munchies[i]->_position = new Vector2(-100, -100);
-			score += 100 * scoreMulti;
+			score += (100 * scoreMulti);
 		}
 	}
 	//Cherry Collision
@@ -258,7 +263,7 @@ void Pacman::CheckCollision()
 		_cherry->_position->X, _cherry->_position->Y, _cherry->_Rect->Width, _cherry->_Rect->Height))
 	{
 		_cherry->_position = new Vector2(-100, -100);
-		score += 1000;
+		score += (1000 * scoreMulti);
 		_pacman->super = true;
 	}
 	if (CollisionCheck(_pacman->_Position->X, _pacman->_Position->Y, _pacman->_SourceRect->Width, _pacman->_SourceRect->Height,
@@ -267,10 +272,10 @@ void Pacman::CheckCollision()
 		if(_pacman->immune)
 		{
 		}
-		else if (_pacman->super == true)
+		else if (_pacman->super == true || _pacman->sprint == true)
 		{
 			_ghost->position = new Vector2(-100, -100);
-			score += 2500;
+			score += (2500 * scoreMulti);
 		}
 		else if (!_pacman->immune)
 		{
@@ -629,19 +634,24 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseSta
 		_pacmanColl->position->X = _pacman->_Position->X+1;
 	}
 	
-
-	//Shoot
-	if (state->IsKeyDown(Input::Keys::SPACE))
+	if (state->IsKeyDown(Input::Keys::DELETEKEY))
 	{
-		pacmanProj = true;
+		debug = !debug;
 	}
-	
 	//Debug Keys
-	if (state->IsKeyDown(Input::Keys::F1)) {
-		roomClear = true;
-	}
-	if (state->IsKeyDown(Input::Keys::F2)) {
-		_pacman->health = 0;
+	if (debug == true)
+	{
+		if (state->IsKeyDown(Input::Keys::F1)) {
+			roomClear = true;
+		}
+		if (state->IsKeyDown(Input::Keys::F2)) {
+			_pacman->health = 0;
+		}
+		if (mouseState->LeftButton == Input::ButtonState::PRESSED)
+		{
+			_pacman->_Position->X = mouseState->X;
+			_pacman->_Position->Y = mouseState->Y;
+		}
 	}
 }
 
@@ -659,6 +669,8 @@ void Pacman::Restart(Input::KeyboardState* state, Input::Keys pauseKey)
 		_pacman->dead = false;
 		_pacman->immune = false;
 		_pacman->health = 100;
+		score = 0;
+		level = 1;
 		Pacman::CreateLevel();
 		_paused = false;
 	}
@@ -694,11 +706,13 @@ void Pacman::Sprint()
 
 void Pacman::Super()
 {
+	scoreMulti = 2.0f;
 	_pacman->superTimer++;
 	if (_pacman->superTimer == 300)
 	{
 		_pacman->super = false;
 		_pacman->superTimer = 0;
+		scoreMulti = 1.0f;
 	}
 }
 
