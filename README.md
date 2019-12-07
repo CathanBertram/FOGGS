@@ -1,7 +1,7 @@
 ##### FOGGS
 
 ##Pacman Todo
-- [ ] Sprint Kills Enemies
+- [X] Sprint Kills Enemies
 - [ ] More Enemies
 - [ ] Boss
 - [ ] Update Level
