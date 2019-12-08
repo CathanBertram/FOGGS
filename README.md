@@ -2,6 +2,7 @@
 
 ##Pacman Todo
 - [X] Sprint Kills Enemies
+- [ ] Enemies Work
 - [ ] More Enemies
 - [ ] Boss
 - [ ] Update Level
