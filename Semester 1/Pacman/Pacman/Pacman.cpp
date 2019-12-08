@@ -9,8 +9,8 @@ using namespace std;
 
 Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_cPacmanFrameTime(250),_cMunchieFrameTime(500),cSpawnDistance(64),cTileNum(768),cTileSize(32){
 	//Initialise Member Variables
-	_cherry = new Food();
 	_ghost = new Enemy[ghostCount]();
+	_cherry = new Food();
 	srand(time(NULL));
 	for (int i = 0; i < MUNCHIECOUNT; i++)
 	{
@@ -19,6 +19,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 		_munchies[i]->_FrameCount = rand() % 1;
 		_munchies[i]->frameTime = rand() % 500 + 50;
 	}
+	_editor = new LevelEditor();
 	_pacman = new Player();
 	_editorColl = new PlayerColl();
 	_pacmanColl = new PlayerColl();
@@ -48,7 +49,15 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 	editor = false;
 	editInitial = false;
 	tile = 'a';
-	file[768] = 'Z';
+
+	for (int i = 0; i < cTileNum; i++)
+	{
+		file[i] = 'Z';
+	}
+
+	_ghost->direction = 0;
+	_ghost->speed = 0.2f;
+
 	ghostCount = 0;
 	levelSave = false;
 	level = 1;
@@ -142,6 +151,9 @@ void Pacman::Update(int elapsedTime)
 				Pacman::UpdateMunchie(_munchies[i], elapsedTime);
 			}
 			Pacman::UpdatePacman(elapsedTime);
+
+			Pacman::UpdateGhost(_ghost, elapsedTime);
+			
 			if (_pacman->sprint == true)
 			{
 				Pacman::Sprint();
@@ -489,17 +501,13 @@ bool Pacman::CollisionCheck(int x1, int y1, int width1, int height1, int x2, int
 
 void Pacman::CreateEnemy(int x,int y)
 {
-	delete[] _ghost;
-	_ghost = new Enemy[ghostCount]();
 	Texture2D* ghostTexture = new Texture2D();
 	ghostTexture->Load("Textures/Enemies/Ghost.png", false);
-
-	for (int i = 0; i < ghostCount; i++)
-	{
-		_ghost[i].position = new Vector2(x, y);
-		_ghost[i].texture = ghostTexture;
-		_ghost[i].sourceRect = new Rect(0.0f, 0.0f, 32, 32);
-	}
+	_ghost->position = new Vector2(x, y);
+	_ghost->texture = ghostTexture;
+	_ghost->sourceRect = new Rect(0.0f, 0.0f, 32, 32);
+	_ghost->collPos = new Vector2(x, y);
+	
 }
 
 void Pacman::CreateLevel()
@@ -636,40 +644,48 @@ void Pacman::CreateLevel()
 
 void Pacman::Editor()
 {
-	string filename;
-	string location = "Levels/X.txt";
 	string level;
 	int strLocal;
+	ofstream levelEdit;
 	if (editInitial == false)
 	{
+		_editor->location = "Levels/X.txt";
 		cout << "Enter A One Word File Name" << endl;
-		cin >> filename;
+		cin >> _editor->fileName;
 		cout << "A = BendDownLeft\nB = BendDownRight\nC = BendUpLeft\nD = BendUpRight\nE = StraightLeftRight\nF = StraightUpDown\nM = Munchie\nH = Cherry\nZ = Empty\nX = Enemy\nP = Pacman" << endl;
 		cout << "Press S To Save The File When You're Ready" << endl;
 	}
-	strLocal = location.find('X');
-	location.replace(strLocal, 1, filename);
-	ofstream levelEdit;
-	levelEdit.open(location, ios::app);
 
 	if (levelSave == false && editInitial == false)
 	{
+		strLocal = _editor->location.find('X');
+		_editor->location.replace(strLocal, 1, _editor->fileName);
+		levelEdit.open(_editor->location);
+		levelEdit.close();
 		Texture2D* tileBlank = new Texture2D();
 		tileBlank->Load("Textures/Level/Square.png", false);
 		for (int i = 0; i < cTileNum; i++)
 		{
 			_tile[i]->texture = tileBlank;
 		}
+		cout << _editor->location << endl;
 	}
 
 	if (levelSave == true)
 	{
+		levelEdit.open(_editor->location, ios::app);
+		cout << _editor->location << endl;
+		//for (int i = 0; i < cTileNum; i++)
+		{
+		//	cout << file[i];
+		}
 		for (int i = 0; i < cTileNum; i++)
 		{
 			level = level + file[i];
 		}
 		levelEdit << level;
 		levelEdit.close();
+		exit(0);
 	}
 	
 	editInitial = true;
@@ -926,24 +942,62 @@ void Pacman::UpdateGhost(Enemy* ghost, int elapsedTime)
 {
 	//Movement
 	//Right
+	for (int i = 0; i < cTileNum; i++)
+	{
+		if (_tile[i]->collision==true)
+		{
+			if (ghost->direction == 0 || ghost->direction == 2)
+			{
+				if (TileCollisionCheck(ghost->collPos->X, ghost->collPos->Y, 1, 32,
+					_tile[i]->position->X, _tile[i]->position->Y, _tile[i]->rect->Width, _tile[i]->rect->Height))
+				{
+					ghost->direction = rand() % 4;
+					break;
+				}
+			}
+			if (ghost->direction == 1 || ghost->direction == 3)
+			{
+				if (TileCollisionCheck(ghost->collPos->X, ghost->collPos->Y, 32, 1,
+					_tile[i]->position->X, _tile[i]->position->Y, _tile[i]->rect->Width, _tile[i]->rect->Height))
+				{
+					ghost->direction = rand() % 4;
+					break;
+				}
+			}
+		}
+	}
+	if (rand()%10000 >= 9500)
+	{
+		ghost->direction = rand() % 4;
+	}
+
+	//Right
 	if (ghost->direction == 0)
 	{
 		ghost->position->X += ghost->speed * elapsedTime;
+		ghost->collPos->X = ghost->position->X + 32;
+		ghost->collPos->Y = ghost->position->Y;
 	}
 	//Left
-	else if (ghost->direction == 1)
-	{
-		ghost->position->X -=ghost->speed * elapsedTime;
-	}
-	//Up
 	else if (ghost->direction == 2)
 	{
+		ghost->position->X -=ghost->speed * elapsedTime;
+		ghost->collPos->X = ghost->position->X;
+		ghost->collPos->Y = ghost->position->Y;
+	}
+	//Up
+	else if (ghost->direction == 1)
+	{
 		ghost->position->Y -= ghost->speed * elapsedTime;
+		ghost->collPos->X = ghost->position->X;
+		ghost->collPos->Y = ghost->position->Y;
 	}
 	//Down
 	else if (ghost->direction == 3)
 	{
 		ghost->position->Y += ghost->speed * elapsedTime;
+		ghost->collPos->X = ghost->position->X;
+		ghost->collPos->Y = ghost->position->Y + 32;
 	}
 }
 

@@ -21,6 +21,16 @@ using namespace S2D;
 // load content, draw and update our game.
 
 // Structs
+struct Enemy
+{
+	Vector2* position;
+	Texture2D* texture;
+	Rect* sourceRect;
+	Vector2* collPos;
+	int direction;
+	float speed;
+};
+
 struct Food
 {
 	int _FrameCount;
@@ -31,13 +41,10 @@ struct Food
 	int frameTime;
 };
 
-struct Enemy
+struct LevelEditor
 {
-	Vector2* position;
-	Texture2D* texture;
-	Rect* sourceRect;
-	int direction;
-	float speed;
+	string location;
+	string fileName;
 };
 
 struct Player
@@ -91,9 +98,10 @@ private:
 	// Position for String
 	Vector2* _stringPosition;
 
+	Enemy* _ghost;
 	Food* _cherry;
 	Food* _munchies[MUNCHIECOUNT];
-	Enemy* _ghost;
+	LevelEditor* _editor;
 	Player* _pacman;
 	PlayerColl* _editorColl;
 	PlayerColl* _pacmanColl;
