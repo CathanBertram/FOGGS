@@ -20,6 +20,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 		_munchies[i]->frameTime = rand() % 500 + 50;
 	}
 	_pacman = new Player();
+	_editorColl = new PlayerColl();
 	_pacmanColl = new PlayerColl();
 
 	//Initialise important Game aspects
@@ -44,9 +45,12 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 	_pacman->immune = false;
 	_pacman->health = 100;
 	debug = false;
-
+	editor = false;
+	editInitial = false;
+	tile = 'a';
+	file[768] = 'Z';
 	ghostCount = 0;
-
+	levelSave = false;
 	level = 1;
 
 	pacmanProj = false;
@@ -85,7 +89,7 @@ Pacman::~Pacman()
 
 void Pacman::LoadContent()
 {
-	Pacman::CreateLevel();                                           
+	Pacman::CreateLevel();
 
 	// Load Pacman
 	_pacman->_Texture = new Texture2D();
@@ -94,6 +98,9 @@ void Pacman::LoadContent()
 	_pacmanColl->rect = new Rect(0.0f, 0.0f, 1, 1);
 	_pacmanColl->texture = new Texture2D();
 	_pacmanColl->texture->Load("texture", false);
+
+	_editorColl->rect = new Rect(0.0f, 0.0f, 1, 1);
+	_editorColl->position = new Vector2(0.0f, 0.0f);
 	
 	_cherry->_Texture = new Texture2D();
 	_cherry->_Texture->Load("Textures/Food/Cherry.png", true);
@@ -112,6 +119,7 @@ void Pacman::Update(int elapsedTime)
 	Input::KeyboardState* keyboardState = Input::Keyboard::GetState();
 	Input::MouseState* mouseState = Input::Mouse::GetState();
 
+	Pacman::CheckEditor(keyboardState, Input::Keys::F10);
 	//Start Game
 	Pacman::CheckStart(keyboardState, Input::Keys::SPACE);
 	//Checks If The Game Has Started 
@@ -124,8 +132,9 @@ void Pacman::Update(int elapsedTime)
 		{
 			Pacman::Restart(keyboardState, Input::Keys::SPACE);
 		}
-		
-		if (!_paused) {			
+
+		if (!_paused) 
+		{
 			Pacman::Input(elapsedTime, keyboardState, mouseState);
 
 			for (int i = 0; i < MUNCHIECOUNT; i++)
@@ -133,7 +142,7 @@ void Pacman::Update(int elapsedTime)
 				Pacman::UpdateMunchie(_munchies[i], elapsedTime);
 			}
 			Pacman::UpdatePacman(elapsedTime);
-			if (_pacman->sprint==true)
+			if (_pacman->sprint == true)
 			{
 				Pacman::Sprint();
 			}
@@ -153,8 +162,10 @@ void Pacman::Update(int elapsedTime)
 			{
 				_paused = false;
 			}
-
-		
+			if (editor == true)
+			{
+				Pacman::Editor();
+			}
 
 			//CollisionChecks
 			Pacman::CheckCollision();
@@ -167,10 +178,8 @@ void Pacman::Update(int elapsedTime)
 			}
 		}
 	}
-	if (keyboardState->IsKeyDown(Input::Keys::ESCAPE))
-	{
-		exit(0);
-	};
+	
+	
 }
 
 void Pacman::Draw(int elapsedTime)
@@ -178,70 +187,75 @@ void Pacman::Draw(int elapsedTime)
 	//Rectangle For Menus
 	_menuRectangle = new Rect(0.0f, 0.0f, Graphics::GetViewportWidth(), Graphics::GetViewportHeight());
 	_menuStringPosition = new Vector2(Graphics::GetViewportWidth() / 2.0f, Graphics::GetViewportHeight() / 2.0f);
-
-	// Allows us to easily create a string
 	std::stringstream stream;
-	stream << "Health: " << _pacman->health << "     Score: " << score << "     Level: " << level << "     High Score: " << highScore;
-	
 	SpriteBatch::BeginDraw(); // Starts Drawing
-
-	//Draw Level
 	for (int i = 0; i < cTileNum; i++)
 	{
 		SpriteBatch::Draw(_tile[i]->texture, _tile[i]->position, _tile[i]->rect);
 	}
-
-	//Draw Munchie
-	for (int i = 0; i < MUNCHIECOUNT; i++)
+	if (editor == false)
 	{
-		SpriteBatch::Draw(_munchies[i]->_Texture, _munchies[i]->_position, _munchies[i]->_Rect);
+		// Allows us to easily create a string
+		
+		stream << "Health: " << _pacman->health << "     Score: " << score << "     Level: " << level << "     High Score: " << highScore;
+
+		//Draw Munchie
+		for (int i = 0; i < MUNCHIECOUNT; i++)
+		{
+			SpriteBatch::Draw(_munchies[i]->_Texture, _munchies[i]->_position, _munchies[i]->_Rect);
+		}
+
+		//Draw Cherry
+		SpriteBatch::Draw(_cherry->_Texture, _cherry->_position, _cherry->_Rect);
+
+		//Draw Enemies
+		SpriteBatch::Draw(_ghost->texture, _ghost->position, _ghost->sourceRect);
+
+		//Draw Pacman
+		if (!_pacman->dead)
+		{
+			SpriteBatch::Draw(_pacman->_Texture, _pacman->_Position, _pacman->_SourceRect);
+		}
 	}
 
-	//Draw Cherry
-	SpriteBatch::Draw(_cherry->_Texture, _cherry->_position, _cherry->_Rect);
-
-	//Draw Enemies
-	SpriteBatch::Draw(_ghost->texture, _ghost->position, _ghost->sourceRect);
-
-	//Draw Pacman
-	if (!_pacman->dead)
-	{
-		SpriteBatch::Draw(_pacman->_Texture, _pacman->_Position, _pacman->_SourceRect);
-	}
 
 	//SpriteBatch::Draw(_pacmanColl->texture, _pacmanColl->position, _pacmanColl->rect);
 
 	// Draws Pause Menu
 	SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::Green);
-	if (_paused)
+	if (editor == false)
 	{
-		if (_pacman->dead)
+		if (_paused)
 		{
-			std::stringstream menuStream;
-			menuStream << "YOU DIED \n Press Space To Restart";
-			SpriteBatch::Draw(_menuBackground, _menuRectangle, nullptr);
-			SpriteBatch::DrawString(menuStream.str().c_str(), _menuStringPosition, Color::Red);
+			if (_pacman->dead)
+			{
+				std::stringstream menuStream;
+				menuStream << "YOU DIED \n Press Space To Restart";
+				SpriteBatch::Draw(_menuBackground, _menuRectangle, nullptr);
+				SpriteBatch::DrawString(menuStream.str().c_str(), _menuStringPosition, Color::Red);
+			}
+			else
+			{
+				std::stringstream menuStream;
+				menuStream << "PAUSED!";
+
+				SpriteBatch::Draw(_menuBackground, _menuRectangle, nullptr);
+				SpriteBatch::DrawString(menuStream.str().c_str(), _menuStringPosition, Color::Red);
+			}
 		}
-		else
+
+		// Draws Start Game
+		SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::Green);
+		if (!_startGame)
 		{
 			std::stringstream menuStream;
-			menuStream << "PAUSED!";
+			menuStream << "PRESS SPACE TO START THE GAME";
 
 			SpriteBatch::Draw(_menuBackground, _menuRectangle, nullptr);
 			SpriteBatch::DrawString(menuStream.str().c_str(), _menuStringPosition, Color::Red);
 		}
 	}
 	
-	// Draws Start Game
-	SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::Green);
-	if (!_startGame)
-	{
-		std::stringstream menuStream;
-		menuStream << "PRESS SPACE TO START THE GAME";
-
-		SpriteBatch::Draw(_menuBackground, _menuRectangle, nullptr);
-		SpriteBatch::DrawString(menuStream.str().c_str(), _menuStringPosition, Color::Red);
-	}
 
 	SpriteBatch::EndDraw(); // Ends Drawing
 }
@@ -283,22 +297,104 @@ void Pacman::CheckCollision()
 			_pacman->immune = true;
 		}
 	}
+	if (editor==true)
+	{
+		for (int i = 0; i < cTileNum; i++)
+		{
+			if (TileCollisionCheck(_editorColl->position->X, _editorColl->position->Y, 1, 1,
+				_tile[i]->position->X, _tile[i]->position->Y, _tile[i]->rect->Width, _tile[i]->rect->Height))
+			{
+				if (tile == 'A')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/BendDownleft.png", false);
+					file[i] = 'A';
+				}
+				if (tile == 'B')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/BendDownRight.png", false);
+					file[i] = 'B';
+				}
+				if (tile == 'C')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/BendUpLeft.png", false);
+					file[i] = 'C';
+				}
+				if (tile == 'D')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/BendUpRight.png", false);
+					file[i] = 'D';
+				}
+				if (tile == 'E')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/StraightLeftRight.png", false);
+					file[i] = 'E';
+				}
+				if (tile == 'F')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/StraightUpDown.png", false);
+					file[i] = 'F';
+				}
+				if (tile == 'Z')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/Square.png", false);
+					file[i] = 'Z';
+				}
+				if (tile == 'M')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/MUNCHIE.png", false);
+					file[i] = 'M';
+				}
+				if (tile == 'P')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/Pacman.png", false);
+					file[i] = 'P';
+				}
+				if (tile == 'X')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/Ghost.png", false);
+					file[i] = 'X';
+				}
+				if (tile == 'H')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/Cherry.png", false);
+					file[i] = 'H';
+				}
+			}
+		}
+	}
+}
+
+void Pacman::CheckEditor(Input::KeyboardState* state, Input::Keys editorKey)
+{
+	if (state->IsKeyDown(Input::Keys::F10))
+	{
+		editor = true;	
+		_startGame = true;
+	}
 }
 
 void Pacman::CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey)
 {
 	//Pause Menu
+	if (state->IsKeyDown(Input::Keys::P) && !_pKeyDown)
 	{
-		if (state->IsKeyDown(Input::Keys::P) && !_pKeyDown)
-		{
-			_pKeyDown = true;
-			_paused = !_paused;
-		}
-		if (state->IsKeyUp(Input::Keys::P)) {
-			_pKeyDown = false;
-		}
+		_pKeyDown = true;
+		_paused = !_paused;
 	}
-
+	if (state->IsKeyUp(Input::Keys::P)) {
+		_pKeyDown = false;
+	}
 }
 
 void Pacman::CheckStart(Input::KeyboardState* state, Input::Keys startKey)
@@ -538,6 +634,47 @@ void Pacman::CreateLevel()
 	ifstream close();
 }
 
+void Pacman::Editor()
+{
+	string filename;
+	string location = "Levels/X.txt";
+	string level;
+	int strLocal;
+	if (editInitial == false)
+	{
+		cout << "Enter A One Word File Name" << endl;
+		cin >> filename;
+		cout << "A = BendDownLeft\nB = BendDownRight\nC = BendUpLeft\nD = BendUpRight\nE = StraightLeftRight\nF = StraightUpDown\nM = Munchie\nH = Cherry\nZ = Empty\nX = Enemy\nP = Pacman" << endl;
+		cout << "Press S To Save The File When You're Ready" << endl;
+	}
+	strLocal = location.find('X');
+	location.replace(strLocal, 1, filename);
+	ofstream levelEdit;
+	levelEdit.open(location, ios::app);
+
+	if (levelSave == false && editInitial == false)
+	{
+		Texture2D* tileBlank = new Texture2D();
+		tileBlank->Load("Textures/Level/Square.png", false);
+		for (int i = 0; i < cTileNum; i++)
+		{
+			_tile[i]->texture = tileBlank;
+		}
+	}
+
+	if (levelSave == true)
+	{
+		for (int i = 0; i < cTileNum; i++)
+		{
+			level = level + file[i];
+		}
+		levelEdit << level;
+		levelEdit.close();
+	}
+	
+	editInitial = true;
+}
+
 void Pacman::EnemyCollision()
 {
 }
@@ -633,10 +770,49 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseSta
 		_pacmanColl->position->Y = _pacman->_Position->Y+32;
 		_pacmanColl->position->X = _pacman->_Position->X+1;
 	}
+	if (state->IsKeyDown(Input::Keys::ESCAPE))
+	{
+		exit(0);
+	};
 	
 	if (state->IsKeyDown(Input::Keys::DELETEKEY))
 	{
 		debug = !debug;
+	}
+	if (editor == true)
+	{
+		if (mouseState->LeftButton == Input::ButtonState::PRESSED)
+		{
+			_editorColl->position->X = mouseState->X;
+			_editorColl->position->Y = mouseState->Y;
+		}
+		if (state->IsKeyDown(Input::Keys::A))
+			tile = 'A';
+		if (state->IsKeyDown(Input::Keys::B))
+			tile = 'B';
+		if (state->IsKeyDown(Input::Keys::C))
+			tile = 'C';
+		if (state->IsKeyDown(Input::Keys::D))
+			tile = 'D';
+		if (state->IsKeyDown(Input::Keys::E))
+			tile = 'E';
+		if (state->IsKeyDown(Input::Keys::F))
+			tile = 'F';
+		if (state->IsKeyDown(Input::Keys::Z))
+			tile = 'Z';
+		if (state->IsKeyDown(Input::Keys::M))
+			tile = 'M';
+		if (state->IsKeyDown(Input::Keys::X))
+			tile = 'X';
+		if (state->IsKeyDown(Input::Keys::P))
+			tile = 'P';
+		if (state->IsKeyDown(Input::Keys::N))
+			tile = 'N';
+		if (state->IsKeyDown(Input::Keys::H))
+			tile = 'H';
+		if (state->IsKeyDown(Input::Keys::S))
+			levelSave = true;
+		
 	}
 	//Debug Keys
 	if (debug == true)

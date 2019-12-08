@@ -95,6 +95,7 @@ private:
 	Food* _munchies[MUNCHIECOUNT];
 	Enemy* _ghost;
 	Player* _pacman;
+	PlayerColl* _editorColl;
 	PlayerColl* _pacmanColl;
 	Tile* _tile[768];
 
@@ -114,8 +115,13 @@ private:
 	int level;
 	int ghostCount;
 	bool debug;
+	bool editor;
+	char tile;
+	bool levelSave;
+	bool editInitial;
 
 	char levelArr[768];
+	char file[768];
 
 	bool pacmanProj;
 	
@@ -124,6 +130,7 @@ private:
 
 	//Pacman Functions
 	void CheckCollision();
+	void CheckEditor(Input::KeyboardState* state, Input::Keys editorKey);
 	void CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey);
 	void CheckStart(Input::KeyboardState* state, Input::Keys startKey);
 	void CheckViewportCollision();
@@ -131,6 +138,7 @@ private:
 						int x2, int y2, int width2, int height2);
 	void CreateEnemy(int x, int y);
 	void CreateLevel();
+	void Editor();
 	void EnemyCollision();
 	void Immune();
 	void Input(int elapsedTime, Input::KeyboardState* state, Input::MouseState* mouseState);
