@@ -2,9 +2,7 @@
 
 ##Pacman Todo
 - [X] Sprint Kills Enemies
-- [ ] Enemies Work
-- [ ] More Enemies
-- [ ] Boss
+- [X] Enemies Work
 - [ ] Update Level
 - [ ] Dynamic Enemies
 - [ ] Dynamic Munchies
