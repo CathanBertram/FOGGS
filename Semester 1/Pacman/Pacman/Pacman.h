@@ -8,8 +8,6 @@
 	#endif
 #endif
 
-#define MUNCHIECOUNT 12
-
 // Just need to include main header file
 #include "S2D/S2D.h"
 
@@ -27,6 +25,7 @@ struct Enemy
 	Texture2D* texture;
 	Rect* sourceRect;
 	Vector2* collPos;
+	Rect* collRect;
 	int direction;
 	float speed;
 };
@@ -101,7 +100,7 @@ private:
 	vector<Enemy> _ghost;
 	vector<Enemy>::iterator it;
 	Food* _cherry;
-	Food* _munchies[MUNCHIECOUNT];
+	vector<Food> _munchies;
 	LevelEditor* _editor;
 	Player* _pacman;
 	PlayerColl* _editorColl;
@@ -149,7 +148,6 @@ private:
 	void CreateEnemy(int x, int y);
 	void CreateLevel();
 	void Editor();
-	void EnemyCollision();
 	void Immune();
 	void Input(int elapsedTime, Input::KeyboardState* state, Input::MouseState* mouseState);
 	void Restart(Input::KeyboardState* state, Input::Keys pauseKey);
@@ -159,9 +157,8 @@ private:
 	void Super();
 	bool TileCollisionCheck(float x1, float y1, float width1, float height1,
 		float x2, float y2, float width2, float height2);
-	void UpdateGhost(Enemy ghost, int elapsedTime);
-	void UpdateLevel();
-	void UpdateMunchie(Food* munchie, int elapsedTime);
+	void UpdateGhost(int elapsedTime);
+	void UpdateMunchie(int elapsedTime);
 	void UpdatePacman(int elapsedTime);
 
 

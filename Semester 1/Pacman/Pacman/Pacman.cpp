@@ -12,14 +12,8 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 	//Initialise Member Variables
 	_ghost.resize(0);
 	_cherry = new Food();
+	_munchies.resize(0);
 	srand(time(NULL));
-	for (int i = 0; i < MUNCHIECOUNT; i++)
-	{
-		_munchies[i] = new Food();
-		_munchies[i]->_CurrentFrameTime = 0;
-		_munchies[i]->_FrameCount = rand() % 1;
-		_munchies[i]->frameTime = rand() % 500 + 50;
-	}
 	_editor = new LevelEditor();
 	_pacman = new Player();
 	_editorColl = new PlayerColl();
@@ -76,19 +70,35 @@ Pacman::~Pacman()
 	delete _pacman->_Texture;
 	delete _pacman->_SourceRect;
 	delete _pacman->_Position;
-	for (int i = 0; i < MUNCHIECOUNT; i++)
+	int i = 0;
+	for (vector<Food>::iterator it = _munchies.begin(); it != _munchies.end() ; it++)
 	{
-		delete _munchies[i]->_Rect;
+		delete _munchies[i]._Rect;
+		delete _munchies[i]._position;
+		i++;
 	}
-	delete _munchies[0]->_Texture;
+	i = 0;
+	for (vector<Enemy>::iterator it = _ghost.begin(); it != _ghost.end() ; it++)
+	{
+		delete _ghost[i].collPos;
+		delete _ghost[i].collRect;
+		delete _ghost[i].position;
+		delete _ghost[i].sourceRect;
+		delete _ghost[i].texture;
+		i++;
+	}
+	delete _munchies[0]._Texture;
 
 	delete _cherry->_position;
 	delete _cherry ->_Texture;
 
+	delete _pacmanColl->rect;
+	delete _pacmanColl->texture;
+	delete _pacmanColl->position;
 	//Clean Up Pacman Structure Pointer
 	delete _pacman;
-	delete[] _munchies;
 	delete _cherry;
+	delete _pacmanColl;
 
 	delete _menuBackground;
 	delete _menuRectangle;
@@ -149,16 +159,13 @@ void Pacman::Update(int elapsedTime)
 		{
 			Pacman::Input(elapsedTime, keyboardState, mouseState);
 
-			for (int i = 0; i < MUNCHIECOUNT; i++)
-			{
-				Pacman::UpdateMunchie(_munchies[i], elapsedTime);
-			}
-			Pacman::UpdatePacman(elapsedTime);
-			for (counter = 0, it = _ghost.begin(); it != _ghost.end(); it++, counter++)
-			{
-				Pacman::UpdateGhost(_ghost[counter], elapsedTime);
-			}
+
+			Pacman::UpdateMunchie(elapsedTime);
 			
+			Pacman::UpdatePacman(elapsedTime);
+
+			Pacman::UpdateGhost(elapsedTime);
+
 			if (_pacman->sprint == true)
 			{
 				Pacman::Sprint();
@@ -220,9 +227,11 @@ void Pacman::Draw(int elapsedTime)
 		stream << "Health: " << _pacman->health << "     Score: " << score << "     Level: " << level << "     High Score: " << highScore;
 
 		//Draw Munchie
-		for (int i = 0; i < MUNCHIECOUNT; i++)
+		int i = 0;
+		for (vector<Food>::iterator it = _munchies.begin(); it != _munchies.end(); it++)
 		{
-			SpriteBatch::Draw(_munchies[i]->_Texture, _munchies[i]->_position, _munchies[i]->_Rect);
+			SpriteBatch::Draw(_munchies[i]._Texture, _munchies[i]._position, _munchies[i]._Rect);
+			i++;
 		}
 
 		//Draw Cherry
@@ -232,6 +241,7 @@ void Pacman::Draw(int elapsedTime)
 		for (counter = 0, it = _ghost.begin(); it != _ghost.end(); it++, counter++)
 		{
 			SpriteBatch::Draw(_ghost[counter].texture, _ghost[counter].position, _ghost[counter].sourceRect);
+			SpriteBatch::Draw(_pacmanColl->texture, _ghost[counter].collPos, _ghost[counter].collRect);
 		}
 		
 
@@ -241,7 +251,6 @@ void Pacman::Draw(int elapsedTime)
 			SpriteBatch::Draw(_pacman->_Texture, _pacman->_Position, _pacman->_SourceRect);
 		}
 	}
-
 
 	//SpriteBatch::Draw(_pacmanColl->texture, _pacmanColl->position, _pacmanColl->rect);
 
@@ -287,14 +296,16 @@ void Pacman::Draw(int elapsedTime)
 void Pacman::CheckCollision()
 {
 	//Munchie Collision
-	for (int i = 0; i < MUNCHIECOUNT; i++)
+	int i = 0;
+	for (vector<Food>::iterator it = _munchies.begin(); it != _munchies.end(); it++)
 	{
 		if (CollisionCheck(_pacman->_Position->X, _pacman->_Position->Y, _pacman->_SourceRect->Width, _pacman->_SourceRect->Height,
-			_munchies[i]->_position->X, _munchies[i]->_position->Y, _munchies[i]->_Rect->Width, _munchies[i]->_Rect->Height))
+			_munchies[i]._position->X, _munchies[i]._position->Y, _munchies[i]._Rect->Width, _munchies[i]._Rect->Height))
 		{
-			_munchies[i]->_position = new Vector2(-100, -100);
+			_munchies[i]._position = new Vector2(-100, -100);
 			score += (100 * scoreMulti);
 		}
+		i++;
 	}
 	//Cherry Collision
 	if (CollisionCheck(_pacman->_Position->X, _pacman->_Position->Y, _pacman->_SourceRect->Width, _pacman->_SourceRect->Height,
@@ -525,6 +536,9 @@ void Pacman::CreateEnemy(int x,int y)
 	_ghost.back().texture = ghostTexture;
 	_ghost.back().sourceRect = new Rect(0.0f, 0.0f, 32, 32);
 	_ghost.back().collPos = new Vector2(x, y);
+	_ghost.back().collRect = new Rect(0.0f, 0.0f, 1, 1);
+	_ghost.back().direction = 0;
+	_ghost.back().speed = 0.2f;
 }
 
 void Pacman::CreateLevel()
@@ -708,10 +722,6 @@ void Pacman::Editor()
 	editInitial = true;
 }
 
-void Pacman::EnemyCollision()
-{
-}
-
 void Pacman::Immune()
 {
 	_pacman->immuneTimer++;
@@ -893,9 +903,14 @@ void Pacman::SpawnCherry(int x, int y)
 
 void Pacman::SpawnMunchie(Texture2D* munchieTexture,int x,int y, int num)
 {
-	_munchies[num]->_Texture = munchieTexture;
-	_munchies[num]->_Rect = new Rect(0.0f, 0.0f, 12, 12);
-	_munchies[num]->_position = new Vector2(x+10, y+10);
+	_munchies.push_back(Food());
+	_munchies.back()._Texture = munchieTexture;
+	_munchies.back()._Rect = new Rect(0.0f, 0.0f, 12, 12);
+	_munchies.back()._position = new Vector2(x+10, y+10);
+	_munchies.back()._CurrentFrameTime = 0;
+	_munchies.back()._FrameCount = rand() % 1;
+	_munchies.back().frameTime = rand() % 500 + 50;
+
 }
 
 void Pacman::Sprint()
@@ -955,136 +970,95 @@ bool Pacman::TileCollisionCheck(float x1, float y1, float width1, float height1,
 	return true;
 }
 
-void Pacman::UpdateGhost(Enemy ghost, int elapsedTime)
+void Pacman::UpdateGhost(int elapsedTime)
 {
-	
-	for (counter = 0, it = _ghost.begin(); it != _ghost.end(); it++, counter++)
+	for (counter = 0, it = _ghost.begin();it != _ghost.end(); it++, counter++)
 	{
-		if (_tile[counter]->collision==true)
+		_ghost[counter].speed = 0.2f;
+		for (int i = 0; i < cTileNum; i++)
 		{
-			if (ghost.direction == 0 || ghost.direction == 2)
+			if (_tile[i]->collision == 1)
 			{
-				if (TileCollisionCheck(ghost.collPos->X, ghost.collPos->Y, 1, 32,
-					_tile[counter]->position->X, _tile[counter]->position->Y, _tile[counter]->rect->Width, _tile[counter]->rect->Height))
+				if (_ghost[counter].direction == 0 || _ghost[counter].direction == 2)
 				{
-					ghost.direction = rand() % 4;
-					break;
+					if (TileCollisionCheck(_ghost[counter].collPos->X, _ghost[counter].collPos->Y, 1, _ghost[counter].sourceRect->Height,
+						_tile[i]->position->X, _tile[i]->position->Y, _tile[i]->rect->Width, _tile[i]->rect->Height))
+					{
+						_ghost[counter].direction = rand() % 4;
+						_ghost[counter].speed = 0;
+						break;
+					}
 				}
-			}
-			if (ghost.direction == 1 || ghost.direction == 3)
-			{
-				if (TileCollisionCheck(ghost.collPos->X, ghost.collPos->Y, 32, 1,
-					_tile[counter]->position->X, _tile[counter]->position->Y, _tile[counter]->rect->Width, _tile[counter]->rect->Height))
+				if (_ghost[counter].direction == 1 || _ghost[counter].direction == 3)
 				{
-					ghost.direction = rand() % 4;
-					break;
+					if (TileCollisionCheck(_ghost[counter].collPos->X, _ghost[counter].collPos->Y, _ghost[counter].sourceRect->Width, 1,
+						_tile[i]->position->X, _tile[i]->position->Y, _tile[i]->rect->Width, _tile[i]->rect->Height))
+					{
+						_ghost[counter].direction = rand() % 4;
+						_ghost[counter].speed = 0;
+						break;
+					}
 				}
 			}
 		}
-	}
-	if (rand()%10000 >= 9500)
-	{
-		ghost.direction = rand() % 4;
-	}
 
-	//Right
-	if (ghost.direction == 0)
-	{
-		ghost.position->X += ghost.speed * elapsedTime;
-		ghost.collPos->X = ghost.position->X + 32;
-		ghost.collPos->Y = ghost.position->Y;
-	}
-	//Left
-	else if (ghost.direction == 2)
-	{
-		ghost.position->X -=ghost.speed * elapsedTime;
-		ghost.collPos->X = ghost.position->X;
-		ghost.collPos->Y = ghost.position->Y;
-	}
-	//Up
-	else if (ghost.direction == 1)
-	{
-		ghost.position->Y -= ghost.speed * elapsedTime;
-		ghost.collPos->X = ghost.position->X;
-		ghost.collPos->Y = ghost.position->Y;
-	}
-	//Down
-	else if (ghost.direction == 3)
-	{
-		ghost.position->Y += ghost.speed * elapsedTime;
-		ghost.collPos->X = ghost.position->X;
-		ghost.collPos->Y = ghost.position->Y + 32;
+		if (rand() % 10000 >= 9500)
+		{
+			_ghost[counter].direction = rand() % 4;
+		}
+
+		//Right
+		if (_ghost[counter].direction == 0)
+		{
+			_ghost[counter].position->X += _ghost[counter].speed * elapsedTime;
+			_ghost[counter].collPos->X = _ghost[counter].position->X + 32;
+			_ghost[counter].collPos->Y = _ghost[counter].position->Y;
+		}
+		//Left
+		else if (_ghost[counter].direction == 2)
+		{
+			_ghost[counter].position->X -= _ghost[counter].speed * elapsedTime;
+			_ghost[counter].collPos->X = _ghost[counter].position->X;
+			_ghost[counter].collPos->Y = _ghost[counter].position->Y;
+		}
+		//Up
+		else if (_ghost[counter].direction == 1)
+		{
+			_ghost[counter].position->Y -= _ghost[counter].speed * elapsedTime;
+			_ghost[counter].collPos->X = _ghost[counter].position->X;
+			_ghost[counter].collPos->Y = _ghost[counter].position->Y;
+		}
+		//Down
+		else if (_ghost[counter].direction == 3)
+		{
+			_ghost[counter].position->Y += _ghost[counter].speed * elapsedTime;
+			_ghost[counter].collPos->X = _ghost[counter].position->X;
+			_ghost[counter].collPos->Y = _ghost[counter].position->Y + 32;
+		}
 	}
 }
 
-void Pacman::UpdateLevel()
-{
-	ifstream level("Levels/1.txt");
-	string line;
-	int i = 0, x = 0, y = 0,munchieCount=0;
-	//converts level file to char array
-	while (!level.eof())
-	{
-		level >> levelArr[i];
-		i++;
-	}
-
-	//gives info for tile struct
-	for (int i = 0; i < cTileNum; i++)
-	{
-		_tile[i] = new Tile;
-		_tile[i]->rect = new Rect(0.0f, 0.0f, cTileSize, cTileSize);
-		_tile[i]->position = new Vector2(x, y);
-		x += 32;
-		if (Graphics::GetViewportWidth() <= x)
-		{
-			x = 0;
-			y += 32;
-		}
-		
-		if (levelArr[i] == 'M')
-		{
-			_munchies[munchieCount]->_position->X = x;
-			_munchies[munchieCount]->_position->Y = y;
-			munchieCount++;
-		}
-		if (levelArr[i] == 'X')
-		{
-			/*ghostCount++;
-			_ghost[i].position->X = x;
-			_ghost[i].position->Y = y;*/
-		}
-		if (levelArr[i] == 'P')
-		{
-			_pacman->_Position = new Vector2(x, y);
-			_pacmanColl->position = new Vector2(x, y);
-		}
-		if (levelArr[i] == 'H')
-		{
-			_cherry->_position->X = x;
-			_cherry->_position->Y = y;
-		}
-	}
-	ifstream close();
-}
-
-void Pacman::UpdateMunchie(Food* munchie, int elapsedTime)
+void Pacman::UpdateMunchie(int elapsedTime)
 {
 	//Animates Munchie
-
-	munchie->frameTime += elapsedTime;
-
-	if (munchie->frameTime > _cMunchieFrameTime)
+	int count = 0;
+	for (vector<Food>::iterator it = _munchies.begin(); it !=_munchies.end(); it++)
 	{
-		munchie->_FrameCount++;
+		_munchies[count].frameTime += elapsedTime;
 
-		if (munchie->_FrameCount > 1)
-			munchie->_FrameCount = 0;
+		if (_munchies[count].frameTime > _cMunchieFrameTime)
+		{
+			_munchies[count]._FrameCount++;
 
-		munchie->frameTime = 0;
+			if (_munchies[count]._FrameCount > 1)
+				_munchies[count]._FrameCount = 0;
+
+			_munchies[count].frameTime = 0;
+		}
+
+		_munchies[count]._Rect->X = _munchies[count]._Rect->Width * _munchies[count]._FrameCount;
+		count++;
 	}
-
-	munchie->_Rect->X = munchie->_Rect->Width * munchie->_FrameCount;
 
 }
 
