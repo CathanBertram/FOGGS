@@ -119,6 +119,7 @@ private:
 
 	int score;
 	int highScore;
+	string scoreStr;
 	float scoreMulti;
 	int level;
 	int ghostCount;

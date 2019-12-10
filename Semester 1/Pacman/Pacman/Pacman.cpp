@@ -4,6 +4,7 @@
 #include <time.h>
 #include <iostream>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -65,7 +66,6 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 	pacmanProj = false;
 	roomClear = false;
 	score = 0;
-	highScore = 0;
 	scoreMulti = 1.0f;
 
 	// Start the Game Loop - This calls Update and Draw in game loop
@@ -99,7 +99,12 @@ Pacman::~Pacman()
 void Pacman::LoadContent()
 {
 	Pacman::CreateLevel();
-
+	ifstream highscoreDoc;
+	highscoreDoc.open("Score/score.txt");
+	getline(highscoreDoc, scoreStr);
+	stringstream scoreStream(scoreStr);
+	scoreStream >> highScore;
+	highscoreDoc.close();
 	// Load Pacman
 	_pacman->_Texture = new Texture2D();
 	_pacman->_Texture->Load("Textures/Pacman.tga", false);
@@ -187,6 +192,9 @@ void Pacman::Update(int elapsedTime)
 			if (score > highScore)
 			{
 				highScore = score;
+				ofstream highscoreDoc("Score/score.txt");
+				highscoreDoc << highScore;
+				highscoreDoc.close();
 			}
 		}
 	}
