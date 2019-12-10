@@ -98,7 +98,8 @@ private:
 	// Position for String
 	Vector2* _stringPosition;
 
-	Enemy* _ghost;
+	vector<Enemy> _ghost;
+	vector<Enemy>::iterator it;
 	Food* _cherry;
 	Food* _munchies[MUNCHIECOUNT];
 	LevelEditor* _editor;
@@ -128,7 +129,7 @@ private:
 	char tile;
 	bool levelSave;
 	bool editInitial;
-
+	int counter;
 	char levelArr[768];
 	char file[768];
 
@@ -158,7 +159,7 @@ private:
 	void Super();
 	bool TileCollisionCheck(float x1, float y1, float width1, float height1,
 		float x2, float y2, float width2, float height2);
-	void UpdateGhost(Enemy* ghost, int elapsedTime);
+	void UpdateGhost(Enemy ghost, int elapsedTime);
 	void UpdateLevel();
 	void UpdateMunchie(Food* munchie, int elapsedTime);
 	void UpdatePacman(int elapsedTime);

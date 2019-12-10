@@ -10,7 +10,7 @@ using namespace std;
 
 Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_cPacmanFrameTime(250),_cMunchieFrameTime(500),cSpawnDistance(64),cTileNum(768),cTileSize(32){
 	//Initialise Member Variables
-	_ghost = new Enemy[ghostCount]();
+	_ghost.resize(0);
 	_cherry = new Food();
 	srand(time(NULL));
 	for (int i = 0; i < MUNCHIECOUNT; i++)
@@ -55,13 +55,11 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 	{
 		file[i] = 'Z';
 	}
-
-	_ghost->direction = 0;
-	_ghost->speed = 0.2f;
-
 	ghostCount = 0;
+
 	levelSave = false;
 	level = 1;
+	counter = 0;
 
 	pacmanProj = false;
 	roomClear = false;
@@ -156,8 +154,10 @@ void Pacman::Update(int elapsedTime)
 				Pacman::UpdateMunchie(_munchies[i], elapsedTime);
 			}
 			Pacman::UpdatePacman(elapsedTime);
-
-			Pacman::UpdateGhost(_ghost, elapsedTime);
+			for (counter = 0, it = _ghost.begin(); it != _ghost.end(); it++, counter++)
+			{
+				Pacman::UpdateGhost(_ghost[counter], elapsedTime);
+			}
 			
 			if (_pacman->sprint == true)
 			{
@@ -229,7 +229,11 @@ void Pacman::Draw(int elapsedTime)
 		SpriteBatch::Draw(_cherry->_Texture, _cherry->_position, _cherry->_Rect);
 
 		//Draw Enemies
-		SpriteBatch::Draw(_ghost->texture, _ghost->position, _ghost->sourceRect);
+		for (counter = 0, it = _ghost.begin(); it != _ghost.end(); it++, counter++)
+		{
+			SpriteBatch::Draw(_ghost[counter].texture, _ghost[counter].position, _ghost[counter].sourceRect);
+		}
+		
 
 		//Draw Pacman
 		if (!_pacman->dead)
@@ -300,23 +304,27 @@ void Pacman::CheckCollision()
 		score += (1000 * scoreMulti);
 		_pacman->super = true;
 	}
-	if (CollisionCheck(_pacman->_Position->X, _pacman->_Position->Y, _pacman->_SourceRect->Width, _pacman->_SourceRect->Height,
-		_ghost->position->X, _ghost->position->Y, _ghost->sourceRect->Width, _ghost->sourceRect->Height))
+	for (counter = 0, it = _ghost.begin(); it != _ghost.end(); it++,counter++)
 	{
-		if(_pacman->immune)
+		if (CollisionCheck(_pacman->_Position->X, _pacman->_Position->Y, _pacman->_SourceRect->Width, _pacman->_SourceRect->Height,
+			_ghost[counter].position->X, _ghost[counter].position->Y, _ghost[counter].sourceRect->Width, _ghost[counter].sourceRect->Height))
 		{
-		}
-		else if (_pacman->super == true || _pacman->sprint == true)
-		{
-			_ghost->position = new Vector2(-100, -100);
-			score += (2500 * scoreMulti);
-		}
-		else if (!_pacman->immune)
-		{
-			_pacman->health -= 10;
-			_pacman->immune = true;
+			if (_pacman->immune)
+			{
+			}
+			else if (_pacman->super == true || _pacman->sprint == true)
+			{
+				_ghost[counter].position = new Vector2(-100, -100);
+				score += (2500 * scoreMulti);
+			}
+			else if (!_pacman->immune)
+			{
+				_pacman->health -= 10;
+				_pacman->immune = true;
+			}
 		}
 	}
+	
 	if (editor==true)
 	{
 		for (int i = 0; i < cTileNum; i++)
@@ -511,11 +519,12 @@ void Pacman::CreateEnemy(int x,int y)
 {
 	Texture2D* ghostTexture = new Texture2D();
 	ghostTexture->Load("Textures/Enemies/Ghost.png", false);
-	_ghost->position = new Vector2(x, y);
-	_ghost->texture = ghostTexture;
-	_ghost->sourceRect = new Rect(0.0f, 0.0f, 32, 32);
-	_ghost->collPos = new Vector2(x, y);
-	
+	ghostCount++;
+	_ghost.push_back(Enemy());
+	_ghost.back().position = new Vector2(x, y);
+	_ghost.back().texture = ghostTexture;
+	_ghost.back().sourceRect = new Rect(0.0f, 0.0f, 32, 32);
+	_ghost.back().collPos = new Vector2(x, y);
 }
 
 void Pacman::CreateLevel()
@@ -946,29 +955,28 @@ bool Pacman::TileCollisionCheck(float x1, float y1, float width1, float height1,
 	return true;
 }
 
-void Pacman::UpdateGhost(Enemy* ghost, int elapsedTime)
+void Pacman::UpdateGhost(Enemy ghost, int elapsedTime)
 {
-	//Movement
-	//Right
-	for (int i = 0; i < cTileNum; i++)
+	
+	for (counter = 0, it = _ghost.begin(); it != _ghost.end(); it++, counter++)
 	{
-		if (_tile[i]->collision==true)
+		if (_tile[counter]->collision==true)
 		{
-			if (ghost->direction == 0 || ghost->direction == 2)
+			if (ghost.direction == 0 || ghost.direction == 2)
 			{
-				if (TileCollisionCheck(ghost->collPos->X, ghost->collPos->Y, 1, 32,
-					_tile[i]->position->X, _tile[i]->position->Y, _tile[i]->rect->Width, _tile[i]->rect->Height))
+				if (TileCollisionCheck(ghost.collPos->X, ghost.collPos->Y, 1, 32,
+					_tile[counter]->position->X, _tile[counter]->position->Y, _tile[counter]->rect->Width, _tile[counter]->rect->Height))
 				{
-					ghost->direction = rand() % 4;
+					ghost.direction = rand() % 4;
 					break;
 				}
 			}
-			if (ghost->direction == 1 || ghost->direction == 3)
+			if (ghost.direction == 1 || ghost.direction == 3)
 			{
-				if (TileCollisionCheck(ghost->collPos->X, ghost->collPos->Y, 32, 1,
-					_tile[i]->position->X, _tile[i]->position->Y, _tile[i]->rect->Width, _tile[i]->rect->Height))
+				if (TileCollisionCheck(ghost.collPos->X, ghost.collPos->Y, 32, 1,
+					_tile[counter]->position->X, _tile[counter]->position->Y, _tile[counter]->rect->Width, _tile[counter]->rect->Height))
 				{
-					ghost->direction = rand() % 4;
+					ghost.direction = rand() % 4;
 					break;
 				}
 			}
@@ -976,36 +984,36 @@ void Pacman::UpdateGhost(Enemy* ghost, int elapsedTime)
 	}
 	if (rand()%10000 >= 9500)
 	{
-		ghost->direction = rand() % 4;
+		ghost.direction = rand() % 4;
 	}
 
 	//Right
-	if (ghost->direction == 0)
+	if (ghost.direction == 0)
 	{
-		ghost->position->X += ghost->speed * elapsedTime;
-		ghost->collPos->X = ghost->position->X + 32;
-		ghost->collPos->Y = ghost->position->Y;
+		ghost.position->X += ghost.speed * elapsedTime;
+		ghost.collPos->X = ghost.position->X + 32;
+		ghost.collPos->Y = ghost.position->Y;
 	}
 	//Left
-	else if (ghost->direction == 2)
+	else if (ghost.direction == 2)
 	{
-		ghost->position->X -=ghost->speed * elapsedTime;
-		ghost->collPos->X = ghost->position->X;
-		ghost->collPos->Y = ghost->position->Y;
+		ghost.position->X -=ghost.speed * elapsedTime;
+		ghost.collPos->X = ghost.position->X;
+		ghost.collPos->Y = ghost.position->Y;
 	}
 	//Up
-	else if (ghost->direction == 1)
+	else if (ghost.direction == 1)
 	{
-		ghost->position->Y -= ghost->speed * elapsedTime;
-		ghost->collPos->X = ghost->position->X;
-		ghost->collPos->Y = ghost->position->Y;
+		ghost.position->Y -= ghost.speed * elapsedTime;
+		ghost.collPos->X = ghost.position->X;
+		ghost.collPos->Y = ghost.position->Y;
 	}
 	//Down
-	else if (ghost->direction == 3)
+	else if (ghost.direction == 3)
 	{
-		ghost->position->Y += ghost->speed * elapsedTime;
-		ghost->collPos->X = ghost->position->X;
-		ghost->collPos->Y = ghost->position->Y + 32;
+		ghost.position->Y += ghost.speed * elapsedTime;
+		ghost.collPos->X = ghost.position->X;
+		ghost.collPos->Y = ghost.position->Y + 32;
 	}
 }
 
