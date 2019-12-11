@@ -4,7 +4,8 @@
 - [X] Sprint Kills Enemies
 - [X] Enemies Work
 - [ ] Update Level
-- [ ] Dynamic Enemies
-- [ ] Dynamic Munchies
+- [ ] Level Select
+- [X] Dynamic Enemies
+- [X] Dynamic Munchies
 - [ ] Audio
 - [X] Level Editor
