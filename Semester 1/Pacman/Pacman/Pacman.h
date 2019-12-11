@@ -99,13 +99,18 @@ private:
 
 	vector<Enemy> _ghost;
 	vector<Enemy>::iterator it;
-	Food* _cherry;
+	vector<Food> _cherry;
 	vector<Food> _munchies;
 	LevelEditor* _editor;
 	Player* _pacman;
 	PlayerColl* _editorColl;
 	PlayerColl* _pacmanColl;
 	Tile* _tile[768];
+
+	SoundEffect* _wa;
+	SoundEffect* _ka;
+	SoundEffect* _coll;
+	SoundEffect* _collect;
 
 	//data for menu
 	Texture2D* _menuBackground;

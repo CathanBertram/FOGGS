@@ -11,7 +11,7 @@ using namespace std;
 Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_cPacmanFrameTime(250),_cMunchieFrameTime(500),cSpawnDistance(64),cTileNum(768),cTileSize(32){
 	//Initialise Member Variables
 	_ghost.resize(0);
-	_cherry = new Food();
+	_cherry.resize(0);
 	_munchies.resize(0);
 	srand(time(NULL));
 	_editor = new LevelEditor();
@@ -45,6 +45,11 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 	editInitial = false;
 	tile = 'a';
 
+	_wa = new SoundEffect();
+	_ka = new SoundEffect();
+	_coll = new SoundEffect();
+	_collect = new SoundEffect();
+
 	for (int i = 0; i < cTileNum; i++)
 	{
 		file[i] = 'Z';
@@ -71,10 +76,17 @@ Pacman::~Pacman()
 	delete _pacman->_SourceRect;
 	delete _pacman->_Position;
 	int i = 0;
-	for (vector<Food>::iterator it = _munchies.begin(); it != _munchies.end() ; it++)
+	for (vector<Food>::iterator it = _munchies.begin(); it != _munchies.end(); it++)
 	{
 		delete _munchies[i]._Rect;
 		delete _munchies[i]._position;
+		i++;
+	}	
+	i = 0;
+	for (vector<Food>::iterator it = _cherry.begin(); it != _cherry.end(); it++)
+	{
+		delete _cherry[i]._position;
+		delete _cherry[i]._Texture;
 		i++;
 	}
 	i = 0;
@@ -87,17 +99,22 @@ Pacman::~Pacman()
 		delete _ghost[i].texture;
 		i++;
 	}
-	delete _munchies[0]._Texture;
+	_munchies.clear();
+	_cherry.clear();
+	_ghost.clear();
 
-	delete _cherry->_position;
-	delete _cherry ->_Texture;
+	delete _wa;
+	delete _ka;
+	delete _coll;
+	delete _collect;
+
+	delete _munchies[0]._Texture;
 
 	delete _pacmanColl->rect;
 	delete _pacmanColl->texture;
 	delete _pacmanColl->position;
 	//Clean Up Pacman Structure Pointer
 	delete _pacman;
-	delete _cherry;
 	delete _pacmanColl;
 
 	delete _menuBackground;
@@ -124,8 +141,11 @@ void Pacman::LoadContent()
 	_editorColl->rect = new Rect(0.0f, 0.0f, 1, 1);
 	_editorColl->position = new Vector2(0.0f, 0.0f);
 	
-	_cherry->_Texture = new Texture2D();
-	_cherry->_Texture->Load("Textures/Food/Cherry.png", true);
+	_wa->Load("Audio/wa.wav");
+	_ka->Load("Audio/ka.wav");
+	_coll->Load("Audio/PacmanColl.wav");
+	_collect->Load("Audio/PacmanCollect.wav");
+
 	// Set string position
 	_stringPosition = new Vector2(10.0f, 25.0f);
 
@@ -235,7 +255,13 @@ void Pacman::Draw(int elapsedTime)
 		}
 
 		//Draw Cherry
-		SpriteBatch::Draw(_cherry->_Texture, _cherry->_position, _cherry->_Rect);
+		i = 0;
+		for (vector<Food>::iterator it = _cherry.begin();  it !=_cherry.end(); it++)
+		{
+			SpriteBatch::Draw(_cherry[i]._Texture, _cherry[i]._position, _cherry[i]._Rect);
+			i++;
+		}
+		
 
 		//Draw Enemies
 		for (counter = 0, it = _ghost.begin(); it != _ghost.end(); it++, counter++)
@@ -304,16 +330,22 @@ void Pacman::CheckCollision()
 		{
 			_munchies[i]._position = new Vector2(-100, -100);
 			score += (100 * scoreMulti);
+			Audio::Play(_collect);
 		}
 		i++;
 	}
 	//Cherry Collision
-	if (CollisionCheck(_pacman->_Position->X, _pacman->_Position->Y, _pacman->_SourceRect->Width, _pacman->_SourceRect->Height,
-		_cherry->_position->X, _cherry->_position->Y, _cherry->_Rect->Width, _cherry->_Rect->Height))
+	i = 0;
+	for (vector<Food>::iterator it = _cherry.begin(); it != _cherry.end(); it++)
 	{
-		_cherry->_position = new Vector2(-100, -100);
-		score += (1000 * scoreMulti);
-		_pacman->super = true;
+		if (CollisionCheck(_pacman->_Position->X, _pacman->_Position->Y, _pacman->_SourceRect->Width, _pacman->_SourceRect->Height,
+			_cherry[i]._position->X, _cherry[i]._position->Y, _cherry[i]._Rect->Width, _cherry[i]._Rect->Height))
+		{
+			_cherry[i]._position = new Vector2(-100, -100);
+			score += (1000 * scoreMulti);
+			_pacman->super = true;
+		}
+		i++;
 	}
 	for (counter = 0, it = _ghost.begin(); it != _ghost.end(); it++,counter++)
 	{
@@ -378,6 +410,36 @@ void Pacman::CheckCollision()
 					_tile[i]->texture = new Texture2D();
 					_tile[i]->texture->Load("Textures/Level/StraightUpDown.png", false);
 					file[i] = 'F';
+				}
+				if (tile == 'G')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/3WayLeft.png", false);
+					file[i] = 'G';
+				}
+				if (tile == 'I')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/3WayUp.png", false);
+					file[i] = 'I';
+				}
+				if (tile == 'J')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/3WayRight.png", false);
+					file[i] = 'J';
+				}
+				if (tile == 'K')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/3WayDown.png", false);
+					file[i] = 'K';
+				}
+				if (tile == 'L')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/4Way.png", false);
+					file[i] = 'L';
 				}
 				if (tile == 'Z')
 				{
@@ -556,24 +618,21 @@ void Pacman::CreateLevel()
 	tileStraightLeftRight->Load("Textures/Level/StraightLeftRight.png", false);
 	Texture2D* tileStraightUpDown = new Texture2D();
 	tileStraightUpDown->Load("Textures/Level/StraightUpDown.png", false);
+	Texture2D* tile3WayLeft = new Texture2D();
+	tile3WayLeft->Load("Textures/Level/3WayLeft.png", false);
+	Texture2D* tile3WayUp = new Texture2D();
+	tile3WayUp->Load("Textures/Level/3WayUp.png", false);
+	Texture2D* tile3WayRight = new Texture2D();
+	tile3WayRight->Load("Textures/Level/3WayRight.png", false);
+	Texture2D* tile3WayDown = new Texture2D();
+	tile3WayDown->Load("Textures/Level/3WayDown.png", false);
+	Texture2D* tile4Way = new Texture2D();
+	tile4Way->Load("Textures/Level/4Way.png", false);
 	Texture2D* tileBlank = new Texture2D();
 	tileBlank->Load("Textures/Level/Blank.png", false);
 	Texture2D* munchieTexture = new Texture2D();
 	munchieTexture->Load("Textures/Food/Munchie.png", true);
-	/*
-	A = BendDownLeft
-	B = BendDownRight
-	C = BendUpLeft
-	D = BendUpRight
-	E = StraightLeftRight
-	F = StraightUpDown
-	M = Munchie
-	H = Cherry
-	Z = Empty
-	X = Enemy
-	P = Pacman
-	N = Boss
-	*/
+
 	int width = Graphics::GetViewportWidth() / 32;
 	int height = Graphics::GetViewportHeight() / 32;
 	int i = 0;
@@ -632,6 +691,32 @@ void Pacman::CreateLevel()
 			_tile[i]->texture = tileStraightUpDown;
 			_tile[i]->collision = 1;
 		}
+		if (levelArr[i] == 'G')
+		{
+			_tile[i]->texture = tile3WayLeft;
+			_tile[i]->collision = 1;
+		}
+		if (levelArr[i] == 'I')
+		{
+			_tile[i]->texture = tile3WayUp;
+			_tile[i]->collision = 1;
+		
+		}
+		if (levelArr[i] == 'J')
+		{
+			_tile[i]->texture = tile3WayRight;
+			_tile[i]->collision = 1;
+		}
+		if (levelArr[i] == 'K')
+		{
+			_tile[i]->texture = tile3WayDown;
+			_tile[i]->collision = 1;
+		}
+		if (levelArr[i] == 'L')
+		{
+			_tile[i]->texture = tile4Way;
+			_tile[i]->collision = 1;
+		}
 		if (levelArr[i] == 'Z')
 		{
 			_tile[i]->texture = tileBlank;
@@ -683,10 +768,9 @@ void Pacman::Editor()
 		_editor->location = "Levels/X.txt";
 		cout << "Enter A One Word File Name" << endl;
 		cin >> _editor->fileName;
-		cout << "A = BendDownLeft\nB = BendDownRight\nC = BendUpLeft\nD = BendUpRight\nE = StraightLeftRight\nF = StraightUpDown\nM = Munchie\nH = Cherry\nZ = Empty\nX = Enemy\nP = Pacman" << endl;
+		cout << "A = BendDownLeft\nB = BendDownRight\nC = BendUpLeft\nD = BendUpRight\nE = StraightLeftRight\nF = StraightUpDown\nG = 3WayLeft\nI = 3WayUp\nJ = 3WayRight\nK = 3WayDown\nL = 4Way\nM = Munchie\nH = Cherry\nZ = Empty\nX = Enemy\nP = Pacman" << endl;
 		cout << "Press S To Save The File When You're Ready" << endl;
 	}
-
 	if (levelSave == false && editInitial == false)
 	{
 		strLocal = _editor->location.find('X');
@@ -841,6 +925,16 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseSta
 			tile = 'E';
 		if (state->IsKeyDown(Input::Keys::F))
 			tile = 'F';
+		if (state->IsKeyDown(Input::Keys::G))
+			tile = 'G';
+		if (state->IsKeyDown(Input::Keys::I))
+			tile = 'I';
+		if (state->IsKeyDown(Input::Keys::J))
+			tile = 'J';
+		if (state->IsKeyDown(Input::Keys::K))
+			tile = 'K';
+		if (state->IsKeyDown(Input::Keys::L))
+			tile = 'L';
 		if (state->IsKeyDown(Input::Keys::Z))
 			tile = 'Z';
 		if (state->IsKeyDown(Input::Keys::M))
@@ -897,8 +991,11 @@ void Pacman::Restart(Input::KeyboardState* state, Input::Keys pauseKey)
 
 void Pacman::SpawnCherry(int x, int y)
 {
-	_cherry->_Rect = new Rect(0.0f, 0.0f, 32, 32);
-	_cherry->_position = new Vector2(x, y);
+	_cherry.push_back(Food());
+	_cherry.back()._Rect = new Rect(0.0f, 0.0f, 32, 32);
+	_cherry.back()._position = new Vector2(x, y);
+	_cherry.back()._Texture = new Texture2D();
+	_cherry.back()._Texture->Load("Textures/Food/Cherry.png", true);
 }
 
 void Pacman::SpawnMunchie(Texture2D* munchieTexture,int x,int y, int num)
