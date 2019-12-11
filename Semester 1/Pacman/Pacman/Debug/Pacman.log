@@ -15,83 +15,68 @@ D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\S2D\Input.h(108): message :         [
 D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\S2D\Input.h(108): message :             _Ty=S2D::Input::Keys
 D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\S2D\Input.h(108): message :         ]
 D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(16,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(329,53): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(329,26): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(328,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(328,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(332,31): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(342,49): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(342,24): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(341,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(341,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(345,32): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(353,57): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(353,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(352,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(352,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(361,33): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(376,88): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(376,65): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(517,95): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(523,57): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(529,58): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(535,97): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(544,57): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(548,57): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(552,58): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(556,59): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(597,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(597,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(600,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(600,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(657,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(657,36): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(737,65): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(737,42): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(742,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(742,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(743,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(743,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(758,11): warning C4930: 'std::ifstream close(void)': prototyped function not called (was a variable definition intended?)
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(855,89): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(855,66): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(863,89): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(863,66): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(913,41): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(914,41): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(965,38): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(966,38): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(996,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(996,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1006,50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1006,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1082,90): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1082,67): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1081,114): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1092,90): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1092,67): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1091,111): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1156,61): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1178,80): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1182,80): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1186,80): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1190,58): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-  main.cpp
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1194,56): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-E:\Visual Studio\VC\Tools\MSVC\14.23.28105\include\vector(1706,1): warning C4251: 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>::_Mypair': class 'std::_Compressed_pair<std::allocator<_Ty>,std::_Vector_val<std::_Simple_types<_Ty>>,true>' needs to have dll-interface to be used by clients of class 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>'
-E:\Visual Studio\VC\Tools\MSVC\14.23.28105\include\vector(1706,1): warning C4251:         with
-E:\Visual Studio\VC\Tools\MSVC\14.23.28105\include\vector(1706,1): warning C4251:         [
-E:\Visual Studio\VC\Tools\MSVC\14.23.28105\include\vector(1706,1): warning C4251:             _Ty=S2D::Input::Keys
-E:\Visual Studio\VC\Tools\MSVC\14.23.28105\include\vector(1706,1): warning C4251:         ]
-E:\Visual Studio\VC\Tools\MSVC\14.23.28105\include\vector(1706): message : see declaration of 'std::_Compressed_pair<std::allocator<_Ty>,std::_Vector_val<std::_Simple_types<_Ty>>,true>'
-E:\Visual Studio\VC\Tools\MSVC\14.23.28105\include\vector(1706): message :         with
-E:\Visual Studio\VC\Tools\MSVC\14.23.28105\include\vector(1706): message :         [
-E:\Visual Studio\VC\Tools\MSVC\14.23.28105\include\vector(1706): message :             _Ty=S2D::Input::Keys
-E:\Visual Studio\VC\Tools\MSVC\14.23.28105\include\vector(1706): message :         ]
-  Generating Code...
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\S2D\Input.h(108): message : see reference to class template instantiation 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>' being compiled
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\S2D\Input.h(108): message :         with
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\S2D\Input.h(108): message :         [
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\S2D\Input.h(108): message :             _Ty=S2D::Input::Keys
-D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\S2D\Input.h(108): message :         ]
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(357,53): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(357,26): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(356,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(356,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(360,31): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(370,49): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(370,24): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(369,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(369,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(373,32): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(381,57): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(381,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(380,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(380,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(389,33): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(404,88): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(404,65): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(545,95): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(551,57): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(557,58): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(563,97): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(572,57): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(576,57): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(580,58): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(584,59): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(638,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(638,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(641,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(641,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(701,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(701,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(772,83): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(772,60): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(781,66): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(781,43): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(787,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(787,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(799,66): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(799,43): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(802,12): warning C4930: 'std::ifstream close(void)': prototyped function not called (was a variable definition intended?)
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(902,89): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(902,66): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(910,89): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(910,66): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(960,41): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(961,41): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1012,38): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1013,38): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1043,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1043,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1053,50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1053,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1129,90): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1129,67): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1128,123): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1139,90): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1139,67): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1138,119): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1203,61): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1225,80): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1229,80): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1233,80): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1237,58): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 1\Pacman\Pacman\Pacman.cpp(1241,56): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   Pacman.vcxproj -> D:\GITHUB\FOGGS\Semester 1\Pacman\Debug\Pacman.exe

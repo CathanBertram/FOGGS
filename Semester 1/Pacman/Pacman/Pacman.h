@@ -133,9 +133,11 @@ private:
 	char tile;
 	bool levelSave;
 	bool editInitial;
+	bool levelLoaded;
 	int counter;
 	char levelArr[768];
 	char file[768];
+	string levelLoc;
 
 	bool pacmanProj;
 	
@@ -148,10 +150,11 @@ private:
 	void CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey);
 	void CheckStart(Input::KeyboardState* state, Input::Keys startKey);
 	void CheckViewportCollision();
+	string ChooseLevel(Input::KeyboardState* state);
 	bool CollisionCheck(int x1, int y1, int width1, int height1,
 						int x2, int y2, int width2, int height2);
 	void CreateEnemy(int x, int y);
-	void CreateLevel();
+	void CreateLevel(string location);
 	void Editor();
 	void Immune();
 	void Input(int elapsedTime, Input::KeyboardState* state, Input::MouseState* mouseState);

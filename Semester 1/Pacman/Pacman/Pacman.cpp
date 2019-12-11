@@ -44,6 +44,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 	editor = false;
 	editInitial = false;
 	tile = 'a';
+	levelLoaded = false;
 
 	_wa = new SoundEffect();
 	_ka = new SoundEffect();
@@ -123,7 +124,6 @@ Pacman::~Pacman()
 
 void Pacman::LoadContent()
 {
-	Pacman::CreateLevel();
 	ifstream highscoreDoc;
 	highscoreDoc.open("Score/score.txt");
 	getline(highscoreDoc, scoreStr);
@@ -141,10 +141,10 @@ void Pacman::LoadContent()
 	_editorColl->rect = new Rect(0.0f, 0.0f, 1, 1);
 	_editorColl->position = new Vector2(0.0f, 0.0f);
 	
-	_wa->Load("Audio/wa.wav");
+	/*_wa->Load("Audio/wa.wav");
 	_ka->Load("Audio/ka.wav");
 	_coll->Load("Audio/PacmanColl.wav");
-	_collect->Load("Audio/PacmanCollect.wav");
+	_collect->Load("Audio/PacmanCollect.wav");*/
 
 	// Set string position
 	_stringPosition = new Vector2(10.0f, 25.0f);
@@ -160,13 +160,21 @@ void Pacman::Update(int elapsedTime)
 	// Gets the current state of the keyboard and mouse
 	Input::KeyboardState* keyboardState = Input::Keyboard::GetState();
 	Input::MouseState* mouseState = Input::Mouse::GetState();
-
+	
+	if (levelLoaded == false)
+	{
+		levelLoc = Pacman::ChooseLevel(keyboardState);
+		Pacman::CreateLevel(levelLoc);
+	}
 	Pacman::CheckEditor(keyboardState, Input::Keys::F10);
 	//Start Game
-	Pacman::CheckStart(keyboardState, Input::Keys::SPACE);
+	if (levelLoaded == true)
+	{
+		Pacman::CheckStart(keyboardState, Input::Keys::SPACE);
+	}
 	//Checks If The Game Has Started 
 	//_startGame = true;
-	if (_startGame)
+	if (_startGame == true)
 	{
 		//Checks If Game Is Paused Before Updating Anything Else
 		Pacman::CheckPaused(keyboardState, Input::Keys::P);
@@ -236,47 +244,58 @@ void Pacman::Draw(int elapsedTime)
 	_menuStringPosition = new Vector2(Graphics::GetViewportWidth() / 2.0f, Graphics::GetViewportHeight() / 2.0f);
 	std::stringstream stream;
 	SpriteBatch::BeginDraw(); // Starts Drawing
-	for (int i = 0; i < cTileNum; i++)
+	if (levelLoaded == true)
 	{
-		SpriteBatch::Draw(_tile[i]->texture, _tile[i]->position, _tile[i]->rect);
+		if (editor == false)
+		{
+			for (int i = 0; i < cTileNum; i++)
+			{
+				SpriteBatch::Draw(_tile[i]->texture, _tile[i]->position, _tile[i]->rect);
+			}
+			// Allows us to easily create a string
+
+			stream << "Health: " << _pacman->health << "     Score: " << score << "     High Score: " << highScore;
+
+			//Draw Munchie
+			int i = 0;
+			for (vector<Food>::iterator it = _munchies.begin(); it != _munchies.end(); it++)
+			{
+				SpriteBatch::Draw(_munchies[i]._Texture, _munchies[i]._position, _munchies[i]._Rect);
+				i++;
+			}
+
+			//Draw Cherry
+			i = 0;
+			for (vector<Food>::iterator it = _cherry.begin(); it != _cherry.end(); it++)
+			{
+				SpriteBatch::Draw(_cherry[i]._Texture, _cherry[i]._position, _cherry[i]._Rect);
+				i++;
+			}
+
+
+			//Draw Enemies
+			for (counter = 0, it = _ghost.begin(); it != _ghost.end(); it++, counter++)
+			{
+				SpriteBatch::Draw(_ghost[counter].texture, _ghost[counter].position, _ghost[counter].sourceRect);
+				SpriteBatch::Draw(_pacmanColl->texture, _ghost[counter].collPos, _ghost[counter].collRect);
+			}
+
+
+			//Draw Pacman
+			if (!_pacman->dead)
+			{
+				SpriteBatch::Draw(_pacman->_Texture, _pacman->_Position, _pacman->_SourceRect);
+			}
+		}
 	}
-	if (editor == false)
+	if (editor == true)
 	{
-		// Allows us to easily create a string
-		
-		stream << "Health: " << _pacman->health << "     Score: " << score << "     Level: " << level << "     High Score: " << highScore;
-
-		//Draw Munchie
-		int i = 0;
-		for (vector<Food>::iterator it = _munchies.begin(); it != _munchies.end(); it++)
+		for (int i = 0; i < cTileNum; i++)
 		{
-			SpriteBatch::Draw(_munchies[i]._Texture, _munchies[i]._position, _munchies[i]._Rect);
-			i++;
-		}
-
-		//Draw Cherry
-		i = 0;
-		for (vector<Food>::iterator it = _cherry.begin();  it !=_cherry.end(); it++)
-		{
-			SpriteBatch::Draw(_cherry[i]._Texture, _cherry[i]._position, _cherry[i]._Rect);
-			i++;
-		}
-		
-
-		//Draw Enemies
-		for (counter = 0, it = _ghost.begin(); it != _ghost.end(); it++, counter++)
-		{
-			SpriteBatch::Draw(_ghost[counter].texture, _ghost[counter].position, _ghost[counter].sourceRect);
-			SpriteBatch::Draw(_pacmanColl->texture, _ghost[counter].collPos, _ghost[counter].collRect);
-		}
-		
-
-		//Draw Pacman
-		if (!_pacman->dead)
-		{
-			SpriteBatch::Draw(_pacman->_Texture, _pacman->_Position, _pacman->_SourceRect);
+			SpriteBatch::Draw(_tile[i]->texture, _tile[i]->position, _tile[i]->rect);
 		}
 	}
+	
 
 	//SpriteBatch::Draw(_pacmanColl->texture, _pacmanColl->position, _pacmanColl->rect);
 
@@ -305,10 +324,18 @@ void Pacman::Draw(int elapsedTime)
 
 		// Draws Start Game
 		SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::Green);
-		if (!_startGame)
+		if (!_startGame && levelLoaded == true)
 		{
 			std::stringstream menuStream;
 			menuStream << "PRESS SPACE TO START THE GAME";
+
+			SpriteBatch::Draw(_menuBackground, _menuRectangle, nullptr);
+			SpriteBatch::DrawString(menuStream.str().c_str(), _menuStringPosition, Color::Red);
+		}
+		if (levelLoaded == false)
+		{
+			std::stringstream menuStream;
+			menuStream << "PRESS A NUMBER KEY TO LOAD A LEVEL";
 
 			SpriteBatch::Draw(_menuBackground, _menuRectangle, nullptr);
 			SpriteBatch::DrawString(menuStream.str().c_str(), _menuStringPosition, Color::Red);
@@ -558,6 +585,19 @@ void Pacman::CheckViewportCollision()
 	}
 }
 
+string Pacman::ChooseLevel(Input::KeyboardState* state)
+{
+	if (state->IsKeyDown(Input::Keys::NUMPAD1))
+	{
+		return string("Levels/1.txt");
+	}
+	if (state->IsKeyDown(Input::Keys::NUMPAD2))
+	{
+		return string("Levels/2.txt");
+	}
+	return string();
+}
+
 bool Pacman::CollisionCheck(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2)
 {
 	int leftPacman = x1;
@@ -596,14 +636,14 @@ void Pacman::CreateEnemy(int x,int y)
 	_ghost.push_back(Enemy());
 	_ghost.back().position = new Vector2(x, y);
 	_ghost.back().texture = ghostTexture;
-	_ghost.back().sourceRect = new Rect(0.0f, 0.0f, 32, 32);
+	_ghost.back().sourceRect = new Rect(0.0f, 0.0f, 30, 30);
 	_ghost.back().collPos = new Vector2(x, y);
 	_ghost.back().collRect = new Rect(0.0f, 0.0f, 1, 1);
 	_ghost.back().direction = 0;
 	_ghost.back().speed = 0.2f;
 }
 
-void Pacman::CreateLevel()
+void Pacman::CreateLevel(string location)
 {
 	//Load Tile Textures
 	Texture2D* tileBendDownLeft = new Texture2D();
@@ -639,123 +679,129 @@ void Pacman::CreateLevel()
 	int count = 0;
 	int munchieCount = 0;
 	int x = 0, y = 0;
-	ifstream level("Levels/1.txt");
-	string line;
-
-	//converts level file to char array
-	while (!level.eof())
+	
+	ifstream level(location);
+	if (level.is_open())
 	{
-		level >> levelArr[i];
-		i++;
+		string line;
+
+		//converts level file to char array
+		while (!level.eof())
+		{
+			level >> levelArr[i];
+			i++;
+		}
+
+		//gives info for tile struct
+		for (int i = 0; i < cTileNum; i++)
+		{
+			_tile[i] = new Tile;
+			_tile[i]->rect = new Rect(0.0f, 0.0f, cTileSize, cTileSize);
+			_tile[i]->position = new Vector2(x, y);
+			x += 32;
+			if (Graphics::GetViewportWidth() <= x)
+			{
+				x = 0;
+				y += 32;
+			}
+			if (levelArr[i] == 'A')
+			{
+				_tile[i]->texture = tileBendDownLeft;
+				_tile[i]->collision = 1;
+			}
+			if (levelArr[i] == 'B')
+			{
+				_tile[i]->texture = tileBendDownRight;
+				_tile[i]->collision = 1;
+			}
+			if (levelArr[i] == 'C')
+			{
+				_tile[i]->texture = tileBendUpLeft;
+				_tile[i]->collision = 1;
+			}
+			if (levelArr[i] == 'D')
+			{
+				_tile[i]->texture = tileBendUpRight;
+				_tile[i]->collision = 1;
+			}
+			if (levelArr[i] == 'E')
+			{
+				_tile[i]->texture = tileStraightLeftRight;
+				_tile[i]->collision = 1;
+			}
+			if (levelArr[i] == 'F')
+			{
+				_tile[i]->texture = tileStraightUpDown;
+				_tile[i]->collision = 1;
+			}
+			if (levelArr[i] == 'G')
+			{
+				_tile[i]->texture = tile3WayLeft;
+				_tile[i]->collision = 1;
+			}
+			if (levelArr[i] == 'I')
+			{
+				_tile[i]->texture = tile3WayUp;
+				_tile[i]->collision = 1;
+
+			}
+			if (levelArr[i] == 'J')
+			{
+				_tile[i]->texture = tile3WayRight;
+				_tile[i]->collision = 1;
+			}
+			if (levelArr[i] == 'K')
+			{
+				_tile[i]->texture = tile3WayDown;
+				_tile[i]->collision = 1;
+			}
+			if (levelArr[i] == 'L')
+			{
+				_tile[i]->texture = tile4Way;
+				_tile[i]->collision = 1;
+			}
+			if (levelArr[i] == 'Z')
+			{
+				_tile[i]->texture = tileBlank;
+				_tile[i]->collision = 0;
+			}
+			if (levelArr[i] == 'M')
+			{
+				_tile[i]->texture = tileBlank;
+				Pacman::SpawnMunchie(munchieTexture, _tile[i]->position->X, _tile[i]->position->Y, munchieCount);
+				munchieCount++;
+				_tile[i]->collision = 0;
+			}
+			if (levelArr[i] == 'X')
+			{
+				_tile[i]->texture = tileBlank;
+				_tile[i]->collision = 0;
+				ghostCount++;
+				Pacman::CreateEnemy(_tile[i]->position->X, _tile[i]->position->Y);
+			}
+			if (levelArr[i] == 'P')
+			{
+				_tile[i]->texture = tileBlank;
+				_pacman->_Position = new Vector2(_tile[i]->position->X, _tile[i]->position->Y);
+				_pacmanColl->position = new Vector2(x, y);
+				_tile[i]->collision = 0;
+			}
+			if (levelArr[i] == 'N')
+			{
+				_tile[i]->texture = tileBlank;
+				_tile[i]->collision = 0;
+			}
+			if (levelArr[i] == 'H')
+			{
+				_tile[i]->texture = tileBlank;
+				_tile[i]->collision = 0;
+				Pacman::SpawnCherry(_tile[i]->position->X, _tile[i]->position->Y);
+			}
+		}
+		ifstream close();
+		levelLoaded = true;
 	}
 	
-	//gives info for tile struct
-	for (int i = 0; i < cTileNum; i++)
-	{
-		_tile[i] = new Tile;
-		_tile[i]->rect = new Rect(0.0f, 0.0f, cTileSize, cTileSize);
-		_tile[i]->position = new Vector2(x,y);
-		x += 32;
-		if (Graphics::GetViewportWidth() <= x)
-		{
-			x = 0;
-			y += 32;
-		}
-		if (levelArr[i]=='A')
-		{
-			_tile[i]->texture = tileBendDownLeft;
-			_tile[i]->collision = 1;
-		}
-		if (levelArr[i] == 'B')
-		{
-			_tile[i]->texture = tileBendDownRight;
-			_tile[i]->collision = 1;
-		}
-		if (levelArr[i] == 'C')
-		{
-			_tile[i]->texture = tileBendUpLeft;
-			_tile[i]->collision = 1;
-		}
-		if (levelArr[i] == 'D')
-		{
-			_tile[i]->texture = tileBendUpRight;
-			_tile[i]->collision = 1;
-		}
-		if (levelArr[i] == 'E')
-		{
-			_tile[i]->texture = tileStraightLeftRight;
-			_tile[i]->collision = 1;
-		}
-		if (levelArr[i] == 'F')
-		{
-			_tile[i]->texture = tileStraightUpDown;
-			_tile[i]->collision = 1;
-		}
-		if (levelArr[i] == 'G')
-		{
-			_tile[i]->texture = tile3WayLeft;
-			_tile[i]->collision = 1;
-		}
-		if (levelArr[i] == 'I')
-		{
-			_tile[i]->texture = tile3WayUp;
-			_tile[i]->collision = 1;
-		
-		}
-		if (levelArr[i] == 'J')
-		{
-			_tile[i]->texture = tile3WayRight;
-			_tile[i]->collision = 1;
-		}
-		if (levelArr[i] == 'K')
-		{
-			_tile[i]->texture = tile3WayDown;
-			_tile[i]->collision = 1;
-		}
-		if (levelArr[i] == 'L')
-		{
-			_tile[i]->texture = tile4Way;
-			_tile[i]->collision = 1;
-		}
-		if (levelArr[i] == 'Z')
-		{
-			_tile[i]->texture = tileBlank;
-			_tile[i]->collision = 0;
-		}
-		if (levelArr[i] == 'M')
-		{
-			_tile[i]->texture = tileBlank;
-			Pacman::SpawnMunchie(munchieTexture, x, y, munchieCount);
-			munchieCount++;
-			_tile[i]->collision = 0;
-		}
-		if (levelArr[i] == 'X')
-		{
-			_tile[i]->texture = tileBlank;
-			_tile[i]->collision = 0;
-			ghostCount++;
-			Pacman::CreateEnemy(_tile[i]->position->X, _tile[i]->position->Y);
-		}
-		if (levelArr[i] == 'P')
-		{
-			_tile[i]->texture = tileBlank;
-			_pacman->_Position = new Vector2(x, y);
-			_pacmanColl->position = new Vector2(x, y);
-			_tile[i]->collision = 0;
-		}
-		if (levelArr[i] == 'N')
-		{
-			_tile[i]->texture = tileBlank;
-			_tile[i]->collision = 0;
-		}
-		if (levelArr[i] == 'H')
-		{
-			_tile[i]->texture = tileBlank;
-			_tile[i]->collision = 0;
-			Pacman::SpawnCherry(x, y);
-		}
-	}
-	ifstream close();
 }
 
 void Pacman::Editor()
@@ -984,7 +1030,7 @@ void Pacman::Restart(Input::KeyboardState* state, Input::Keys pauseKey)
 		_pacman->health = 100;
 		score = 0;
 		level = 1;
-		Pacman::CreateLevel();
+		Pacman::CreateLevel(levelLoc);
 		_paused = false;
 	}
 }
@@ -1078,7 +1124,7 @@ void Pacman::UpdateGhost(int elapsedTime)
 			{
 				if (_ghost[counter].direction == 0 || _ghost[counter].direction == 2)
 				{
-					if (TileCollisionCheck(_ghost[counter].collPos->X, _ghost[counter].collPos->Y, 1, _ghost[counter].sourceRect->Height,
+					if (TileCollisionCheck(_ghost[counter].collPos->X, _ghost[counter].collPos->Y, 1, _ghost[counter].sourceRect->Height - 2,
 						_tile[i]->position->X, _tile[i]->position->Y, _tile[i]->rect->Width, _tile[i]->rect->Height))
 					{
 						_ghost[counter].direction = rand() % 4;
@@ -1088,7 +1134,7 @@ void Pacman::UpdateGhost(int elapsedTime)
 				}
 				if (_ghost[counter].direction == 1 || _ghost[counter].direction == 3)
 				{
-					if (TileCollisionCheck(_ghost[counter].collPos->X, _ghost[counter].collPos->Y, _ghost[counter].sourceRect->Width, 1,
+					if (TileCollisionCheck(_ghost[counter].collPos->X, _ghost[counter].collPos->Y, _ghost[counter].sourceRect->Width - 2, 1,
 						_tile[i]->position->X, _tile[i]->position->Y, _tile[i]->rect->Width, _tile[i]->rect->Height))
 					{
 						_ghost[counter].direction = rand() % 4;
@@ -1108,29 +1154,29 @@ void Pacman::UpdateGhost(int elapsedTime)
 		if (_ghost[counter].direction == 0)
 		{
 			_ghost[counter].position->X += _ghost[counter].speed * elapsedTime;
-			_ghost[counter].collPos->X = _ghost[counter].position->X + 32;
-			_ghost[counter].collPos->Y = _ghost[counter].position->Y;
+			_ghost[counter].collPos->X = _ghost[counter].position->X + _ghost[counter].sourceRect->Width;
+			_ghost[counter].collPos->Y = _ghost[counter].position->Y-1;
 		}
 		//Left
 		else if (_ghost[counter].direction == 2)
 		{
 			_ghost[counter].position->X -= _ghost[counter].speed * elapsedTime;
 			_ghost[counter].collPos->X = _ghost[counter].position->X;
-			_ghost[counter].collPos->Y = _ghost[counter].position->Y;
+			_ghost[counter].collPos->Y = _ghost[counter].position->Y-1;
 		}
 		//Up
 		else if (_ghost[counter].direction == 1)
 		{
 			_ghost[counter].position->Y -= _ghost[counter].speed * elapsedTime;
-			_ghost[counter].collPos->X = _ghost[counter].position->X;
+			_ghost[counter].collPos->X = _ghost[counter].position->X+1;
 			_ghost[counter].collPos->Y = _ghost[counter].position->Y;
 		}
 		//Down
 		else if (_ghost[counter].direction == 3)
 		{
 			_ghost[counter].position->Y += _ghost[counter].speed * elapsedTime;
-			_ghost[counter].collPos->X = _ghost[counter].position->X;
-			_ghost[counter].collPos->Y = _ghost[counter].position->Y + 32;
+			_ghost[counter].collPos->X = _ghost[counter].position->X+1;
+			_ghost[counter].collPos->Y = _ghost[counter].position->Y + _ghost[counter].sourceRect->Height;
 		}
 	}
 }
