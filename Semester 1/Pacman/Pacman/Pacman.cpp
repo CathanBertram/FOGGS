@@ -919,7 +919,7 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseSta
 				if (TileCollisionCheck(_pacmanColl->position->X, _pacmanColl->position->Y, 1, 30,
 					_tile[i]->position->X, _tile[i]->position->Y, _tile[i]->rect->Width, _tile[i]->rect->Height))
 				{
-					Audio::Play(_coll);
+					//Audio::Play(_coll);
 					_pacman->speed = 0;
 				}
 			}
@@ -928,7 +928,7 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseSta
 				if (TileCollisionCheck(_pacmanColl->position->X, _pacmanColl->position->Y, 30, 1,
 					_tile[i]->position->X, _tile[i]->position->Y, _tile[i]->rect->Width, _tile[i]->rect->Height))
 				{
-					Audio::Play(_coll);
+					//Audio::Play(_coll);
 					_pacman->speed = 0;
 				}
 			}
@@ -1256,11 +1256,11 @@ void Pacman::UpdatePacman(int elapsedTime)
 	}
 	if (_pacman->_Frame == 0)
 	{
-		//Audio::Play(_wa);
+		Audio::Play(_wa);
 	}
 	else if (_pacman->_Frame == 1)
 	{
-		//Audio::Play(_ka);
+		Audio::Play(_ka);
 	}
 	//Pacman Source Rect
 	//Changes Pacmans Direction
