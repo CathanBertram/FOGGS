@@ -105,7 +105,12 @@ Pacman::~Pacman()
 	_munchies.clear();
 	_cherry.clear();
 	_ghost.clear();
-
+	for (int i = 0; i < cTileNum; i++)
+	{
+		delete _tile[i]->texture;
+		delete _tile[i]->position;
+		delete _tile[i]->rect;
+	}
 	delete _wa;
 	delete _ka;
 	delete _coll;
