@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_cPacmanFrameTime(250),_cMunchieFrameTime(500),cSpawnDistance(64),cTileNum(768),cTileSize(32){
+Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_cPacmanFrameTime(250),_cMunchieFrameTime(500),cSpawnDistance(64),cTileNum(768),cTileSize(32),_cGhostFrameTime(250){
 	//Initialise Member Variables
 	_ghost.resize(0);
 	_cherry.resize(0);
@@ -19,10 +19,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 	_editorColl = new PlayerColl();
 	_pacmanColl = new PlayerColl();
 
-	//Initialise important Game aspects
-	Audio::Initialise();
-	Graphics::Initialise(argc, argv, this, 1024, 768, false, 25, 25, "Pacman", 60);
-	Input::Initialise();
+
 	//Initialise Remaining Variables
 	_paused = false;
 	_pKeyDown = false;
@@ -46,26 +43,29 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 	tile = 'a';
 	levelLoaded = false;
 
+	_collect = new SoundEffect();
 	_wa = new SoundEffect();
 	_ka = new SoundEffect();
 	_coll = new SoundEffect();
-	_collect = new SoundEffect();
 
 	for (int i = 0; i < cTileNum; i++)
 	{
 		file[i] = 'Z';
 	}
 	ghostCount = 0;
-
+	munchieCount = 0;
 	levelSave = false;
 	level = 1;
 	counter = 0;
-
+	win = false;
 	pacmanProj = false;
 	roomClear = false;
 	score = 0;
 	scoreMulti = 1.0f;
-
+	//Initialise important Game aspects
+	Audio::Initialise();
+	Graphics::Initialise(argc, argv, this, 1024, 768, false, 25, 25, "Pacman", 60);
+	Input::Initialise();
 	// Start the Game Loop - This calls Update and Draw in game loop
 	Graphics::StartGameLoop();
 }
@@ -141,10 +141,10 @@ void Pacman::LoadContent()
 	_editorColl->rect = new Rect(0.0f, 0.0f, 1, 1);
 	_editorColl->position = new Vector2(0.0f, 0.0f);
 	
-	/*_wa->Load("Audio/wa.wav");
+	_wa->Load("Audio/wa.wav");
 	_ka->Load("Audio/ka.wav");
 	_coll->Load("Audio/PacmanColl.wav");
-	_collect->Load("Audio/PacmanCollect.wav");*/
+	_collect->Load("Audio/PacmanCollect.wav");
 
 	// Set string position
 	_stringPosition = new Vector2(10.0f, 25.0f);
@@ -178,63 +178,66 @@ void Pacman::Update(int elapsedTime)
 	{
 		//Checks If Game Is Paused Before Updating Anything Else
 		Pacman::CheckPaused(keyboardState, Input::Keys::P);
-		if (_pacman->dead)
+		if (_pacman->dead || win == true)
 		{
 			Pacman::Restart(keyboardState, Input::Keys::SPACE);
 		}
-
-		if (!_paused) 
+		if (win == false)
 		{
-			Pacman::Input(elapsedTime, keyboardState, mouseState);
+			if (!_paused)
+			{
+				Pacman::Input(elapsedTime, keyboardState, mouseState);
 
+				Pacman::UpdateMunchie(elapsedTime);
 
-			Pacman::UpdateMunchie(elapsedTime);
-			
-			Pacman::UpdatePacman(elapsedTime);
+				Pacman::UpdatePacman(elapsedTime);
 
-			Pacman::UpdateGhost(elapsedTime);
+				Pacman::UpdateGhost(elapsedTime);
 
-			if (_pacman->sprint == true)
-			{
-				Pacman::Sprint();
-			}
-			if (_pacman->super == true)
-			{
-				Pacman::Super();
-			}
-			if (_pacman->immune == true)
-			{
-				Pacman::Immune();
-			}
-			if (_pacman->dead)
-			{
-				_paused = true;
-			}
-			else
-			{
-				_paused = false;
-			}
-			if (editor == true)
-			{
-				Pacman::Editor();
-			}
+				if (_pacman->sprint == true)
+				{
+					Pacman::Sprint();
+				}
+				if (_pacman->super == true)
+				{
+					Pacman::Super();
+				}
+				if (_pacman->immune == true)
+				{
+					Pacman::Immune();
+				}
+				if (_pacman->dead)
+				{
+					_paused = true;
+				}
+				else
+				{
+					_paused = false;
+				}
+				if (editor == true)
+				{
+					Pacman::Editor();
+				}
 
-			//CollisionChecks
-			Pacman::CheckCollision();
+				//CollisionChecks
+				Pacman::CheckCollision();
 
-			//Confine Pacman To Screen
-			Pacman::CheckViewportCollision();
-			if (score > highScore)
-			{
-				highScore = score;
-				ofstream highscoreDoc("Score/score.txt");
-				highscoreDoc << highScore;
-				highscoreDoc.close();
+				if (munchieCount == 0)
+				{
+					win = true;
+				}
+				//Confine Pacman To Screen
+				Pacman::CheckViewportCollision();
+				if (score > highScore)
+				{
+					highScore = score;
+					ofstream highscoreDoc("Score/score.txt");
+					highscoreDoc << highScore;
+					highscoreDoc.close();
+				}
 			}
 		}
 	}
-	
-	
 }
 
 void Pacman::Draw(int elapsedTime)
@@ -277,7 +280,7 @@ void Pacman::Draw(int elapsedTime)
 			for (counter = 0, it = _ghost.begin(); it != _ghost.end(); it++, counter++)
 			{
 				SpriteBatch::Draw(_ghost[counter].texture, _ghost[counter].position, _ghost[counter].sourceRect);
-				SpriteBatch::Draw(_pacmanColl->texture, _ghost[counter].collPos, _ghost[counter].collRect);
+				//SpriteBatch::Draw(_pacmanColl->texture, _ghost[counter].collPos, _ghost[counter].collRect);
 			}
 
 
@@ -321,13 +324,20 @@ void Pacman::Draw(int elapsedTime)
 				SpriteBatch::DrawString(menuStream.str().c_str(), _menuStringPosition, Color::Red);
 			}
 		}
+		if (win == true)
+		{
+			std::stringstream menuStream;
+			menuStream << "CONGRATULATIONS YOU WON \nPress Space To Restart";
 
+			SpriteBatch::Draw(_menuBackground, _menuRectangle, nullptr);
+			SpriteBatch::DrawString(menuStream.str().c_str(), _menuStringPosition, Color::Red);
+		}
 		// Draws Start Game
 		SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::Green);
 		if (!_startGame && levelLoaded == true)
 		{
 			std::stringstream menuStream;
-			menuStream << "PRESS SPACE TO START THE GAME";
+			menuStream << "PRESS SPACE TO START";
 
 			SpriteBatch::Draw(_menuBackground, _menuRectangle, nullptr);
 			SpriteBatch::DrawString(menuStream.str().c_str(), _menuStringPosition, Color::Red);
@@ -355,9 +365,10 @@ void Pacman::CheckCollision()
 		if (CollisionCheck(_pacman->_Position->X, _pacman->_Position->Y, _pacman->_SourceRect->Width, _pacman->_SourceRect->Height,
 			_munchies[i]._position->X, _munchies[i]._position->Y, _munchies[i]._Rect->Width, _munchies[i]._Rect->Height))
 		{
+			Audio::Play(_collect);
 			_munchies[i]._position = new Vector2(-100, -100);
 			score += (100 * scoreMulti);
-			Audio::Play(_collect);
+			munchieCount--;
 		}
 		i++;
 	}
@@ -371,6 +382,7 @@ void Pacman::CheckCollision()
 			_cherry[i]._position = new Vector2(-100, -100);
 			score += (1000 * scoreMulti);
 			_pacman->super = true;
+			Audio::Play(_collect);
 		}
 		i++;
 	}
@@ -595,6 +607,10 @@ string Pacman::ChooseLevel(Input::KeyboardState* state)
 	{
 		return string("Levels/2.txt");
 	}
+	if (state->IsKeyDown(Input::Keys::NUMPAD3))
+	{
+		return string("Levels/3.txt");
+	}
 	return string();
 }
 
@@ -641,6 +657,9 @@ void Pacman::CreateEnemy(int x,int y)
 	_ghost.back().collRect = new Rect(0.0f, 0.0f, 1, 1);
 	_ghost.back().direction = 0;
 	_ghost.back().speed = 0.2f;
+	_ghost.back().currentFrameTime = 0;
+	_ghost.back().frameTime = 0;
+	_ghost.back().frameCount = 0;
 }
 
 void Pacman::CreateLevel(string location)
@@ -900,6 +919,7 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseSta
 				if (TileCollisionCheck(_pacmanColl->position->X, _pacmanColl->position->Y, 1, 30,
 					_tile[i]->position->X, _tile[i]->position->Y, _tile[i]->rect->Width, _tile[i]->rect->Height))
 				{
+					Audio::Play(_coll);
 					_pacman->speed = 0;
 				}
 			}
@@ -908,6 +928,7 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseSta
 				if (TileCollisionCheck(_pacmanColl->position->X, _pacmanColl->position->Y, 30, 1,
 					_tile[i]->position->X, _tile[i]->position->Y, _tile[i]->rect->Width, _tile[i]->rect->Height))
 				{
+					Audio::Play(_coll);
 					_pacman->speed = 0;
 				}
 			}
@@ -1029,9 +1050,15 @@ void Pacman::Restart(Input::KeyboardState* state, Input::Keys pauseKey)
 		_pacman->immune = false;
 		_pacman->health = 100;
 		score = 0;
-		level = 1;
+		win = false;
+		_startGame = false;
+		_ghost.clear();
+		_munchies.clear();
+		_cherry.clear();
+		levelLoaded = false;
 		Pacman::CreateLevel(levelLoc);
 		_paused = false;
+		_spaceKeyDown = false;
 	}
 }
 
@@ -1046,6 +1073,7 @@ void Pacman::SpawnCherry(int x, int y)
 
 void Pacman::SpawnMunchie(Texture2D* munchieTexture,int x,int y, int num)
 {
+	munchieCount++;
 	_munchies.push_back(Food());
 	_munchies.back()._Texture = munchieTexture;
 	_munchies.back()._Rect = new Rect(0.0f, 0.0f, 12, 12);
@@ -1178,6 +1206,16 @@ void Pacman::UpdateGhost(int elapsedTime)
 			_ghost[counter].collPos->X = _ghost[counter].position->X+1;
 			_ghost[counter].collPos->Y = _ghost[counter].position->Y + _ghost[counter].sourceRect->Height;
 		}
+		_ghost[counter].frameTime += elapsedTime;
+		if (_ghost[counter].frameTime > _cGhostFrameTime)
+		{
+			_ghost[counter].frameCount++;
+			if (_ghost[counter].frameCount > 3)
+				_ghost[counter].frameTime = 0;
+			_ghost[counter].frameTime = 0;			
+		}
+
+		_ghost[counter].sourceRect->X = _ghost[counter].sourceRect->Width * _ghost[counter].frameCount;
 	}
 }
 
@@ -1215,6 +1253,14 @@ void Pacman::UpdatePacman(int elapsedTime)
 		if (_pacman->_Frame > 1)
 			_pacman->_Frame = 0;
 		_pacman->_CurrentFrameTime = 0;
+	}
+	if (_pacman->_Frame == 0)
+	{
+		//Audio::Play(_wa);
+	}
+	else if (_pacman->_Frame == 1)
+	{
+		//Audio::Play(_ka);
 	}
 	//Pacman Source Rect
 	//Changes Pacmans Direction

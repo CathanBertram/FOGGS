@@ -28,6 +28,9 @@ struct Enemy
 	Rect* collRect;
 	int direction;
 	float speed;
+	int currentFrameTime;
+	int frameTime;
+	int frameCount;
 };
 
 struct Food
@@ -93,6 +96,7 @@ private:
 	const int cSpawnDistance;
 	const int cTileNum;
 	const int cTileSize;
+	const int _cGhostFrameTime;
 
 	// Position for String
 	Vector2* _stringPosition;
@@ -138,6 +142,8 @@ private:
 	char levelArr[768];
 	char file[768];
 	string levelLoc;
+	int munchieCount;
+	bool win;
 
 	bool pacmanProj;
 	
