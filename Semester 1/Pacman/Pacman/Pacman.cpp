@@ -349,7 +349,7 @@ void Pacman::Draw(int elapsedTime)
 		if (levelLoaded == false)
 		{
 			std::stringstream menuStream;
-			menuStream << "PRESS A NUMBER KEY TO LOAD A LEVEL";
+			menuStream << "PRESS A NUMBER BETWEEN 1 AND 5 TO LOAD A LEVEL";
 
 			SpriteBatch::Draw(_menuBackground, _menuRectangle, nullptr);
 			SpriteBatch::DrawString(menuStream.str().c_str(), _menuStringPosition, Color::Red);
