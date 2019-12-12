@@ -115,6 +115,7 @@ private:
 	SoundEffect* _ka;
 	SoundEffect* _coll;
 	SoundEffect* _collect;
+	SoundEffect* _start;
 
 	//data for menu
 	Texture2D* _menuBackground;

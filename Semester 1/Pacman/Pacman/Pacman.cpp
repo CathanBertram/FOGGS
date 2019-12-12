@@ -36,7 +36,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 	_pacman->superTimer = 0;
 	_pacman->dead = false;
 	_pacman->immune = false;
-	_pacman->health = 100;
+	_pacman->health = 30;
 	debug = false;
 	editor = false;
 	editInitial = false;
@@ -48,6 +48,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 	_wa = new SoundEffect();
 	_ka = new SoundEffect();
 	_coll = new SoundEffect();
+	_start = new SoundEffect();
 
 	for (int i = 0; i < cTileNum; i++)
 	{
@@ -109,12 +110,15 @@ Pacman::~Pacman()
 	delete _ka;
 	delete _coll;
 	delete _collect;
+	delete _start;
 
 	delete _munchies[0]._Texture;
 
 	delete _pacmanColl->rect;
 	delete _pacmanColl->texture;
 	delete _pacmanColl->position;
+	delete _editorColl->position;
+	delete _editorColl->rect;
 	//Clean Up Pacman Structure Pointer
 	delete _pacman;
 	delete _pacmanColl;
@@ -146,6 +150,7 @@ void Pacman::LoadContent()
 	_ka->Load("Audio/ka.wav");
 	_coll->Load("Audio/PacmanColl.wav");
 	_collect->Load("Audio/PacmanCollect.wav");
+	_start->Load("Audio/EHHH EH.wav");
 
 	// Set string position
 	_stringPosition = new Vector2(10.0f, 25.0f);
@@ -165,7 +170,7 @@ void Pacman::Update(int elapsedTime)
 	if (levelLoaded == false)
 	{
 		levelLoc = Pacman::ChooseLevel(keyboardState);
-		Pacman::CreateLevel(levelLoc);
+			Pacman::CreateLevel(levelLoc);	
 	}
 	Pacman::CheckEditor(keyboardState, Input::Keys::F10);
 	//Start Game
@@ -700,42 +705,6 @@ void Pacman::CreateEnemy(int x,int y)
 
 void Pacman::CreateLevel(string location)
 {
-	//Load Tile Textures
-	Texture2D* tileBendDownLeft = new Texture2D();
-	tileBendDownLeft->Load("Textures/Level/BendDownleft.png", false);
-	Texture2D* tileBendDownRight = new Texture2D();
-	tileBendDownRight->Load("Textures/Level/BendDownRight.png", false);
-	Texture2D* tileBendUpLeft = new Texture2D();
-	tileBendUpLeft->Load("Textures/Level/BendUpleft.png", false);
-	Texture2D* tileBendUpRight = new Texture2D();
-	tileBendUpRight->Load("Textures/Level/BendUpRight.png", false);
-	Texture2D* tileStraightLeftRight = new Texture2D();
-	tileStraightLeftRight->Load("Textures/Level/StraightLeftRight.png", false);
-	Texture2D* tileStraightUpDown = new Texture2D();
-	tileStraightUpDown->Load("Textures/Level/StraightUpDown.png", false);
-	Texture2D* tile3WayLeft = new Texture2D();
-	tile3WayLeft->Load("Textures/Level/3WayLeft.png", false);
-	Texture2D* tile3WayUp = new Texture2D();
-	tile3WayUp->Load("Textures/Level/3WayUp.png", false);
-	Texture2D* tile3WayRight = new Texture2D();
-	tile3WayRight->Load("Textures/Level/3WayRight.png", false);
-	Texture2D* tile3WayDown = new Texture2D();
-	tile3WayDown->Load("Textures/Level/3WayDown.png", false);
-	Texture2D* tile4Way = new Texture2D();
-	tile4Way->Load("Textures/Level/4Way.png", false);
-	Texture2D* tileBlank = new Texture2D();
-	tileBlank->Load("Textures/Level/Blank.png", false);
-	Texture2D* tileBlockLeft = new Texture2D();
-	tileBlockLeft->Load("Textures/Level/BlockLeft.png", false);
-	Texture2D* tileBlockRight = new Texture2D();
-	tileBlockRight->Load("Textures/Level/BlockRight.png", false);
-	Texture2D* tileBlockUp = new Texture2D();
-	tileBlockUp->Load("Textures/Level/BlockUp.png", false);
-	Texture2D* tileBlockDown = new Texture2D();
-	tileBlockDown->Load("Textures/Level/BlockDown.png", false);
-	Texture2D* munchieTexture = new Texture2D();
-	munchieTexture->Load("Textures/Food/Munchie.png", true);
-
 	int width = Graphics::GetViewportWidth() / 32;
 	int height = Graphics::GetViewportHeight() / 32;
 	int i = 0;
@@ -746,6 +715,42 @@ void Pacman::CreateLevel(string location)
 	ifstream level(location);
 	if (level.is_open())
 	{
+		//Load Tile Textures
+		Texture2D* tileBendDownLeft = new Texture2D();
+		tileBendDownLeft->Load("Textures/Level/BendDownleft.png", false);
+		Texture2D* tileBendDownRight = new Texture2D();
+		tileBendDownRight->Load("Textures/Level/BendDownRight.png", false);
+		Texture2D* tileBendUpLeft = new Texture2D();
+		tileBendUpLeft->Load("Textures/Level/BendUpleft.png", false);
+		Texture2D* tileBendUpRight = new Texture2D();
+		tileBendUpRight->Load("Textures/Level/BendUpRight.png", false);
+		Texture2D* tileStraightLeftRight = new Texture2D();
+		tileStraightLeftRight->Load("Textures/Level/StraightLeftRight.png", false);
+		Texture2D* tileStraightUpDown = new Texture2D();
+		tileStraightUpDown->Load("Textures/Level/StraightUpDown.png", false);
+		Texture2D* tile3WayLeft = new Texture2D();
+		tile3WayLeft->Load("Textures/Level/3WayLeft.png", false);
+		Texture2D* tile3WayUp = new Texture2D();
+		tile3WayUp->Load("Textures/Level/3WayUp.png", false);
+		Texture2D* tile3WayRight = new Texture2D();
+		tile3WayRight->Load("Textures/Level/3WayRight.png", false);
+		Texture2D* tile3WayDown = new Texture2D();
+		tile3WayDown->Load("Textures/Level/3WayDown.png", false);
+		Texture2D* tile4Way = new Texture2D();
+		tile4Way->Load("Textures/Level/4Way.png", false);
+		Texture2D* tileBlank = new Texture2D();
+		tileBlank->Load("Textures/Level/Blank.png", false);
+		Texture2D* tileBlockLeft = new Texture2D();
+		tileBlockLeft->Load("Textures/Level/BlockLeft.png", false);
+		Texture2D* tileBlockRight = new Texture2D();
+		tileBlockRight->Load("Textures/Level/BlockRight.png", false);
+		Texture2D* tileBlockUp = new Texture2D();
+		tileBlockUp->Load("Textures/Level/BlockUp.png", false);
+		Texture2D* tileBlockDown = new Texture2D();
+		tileBlockDown->Load("Textures/Level/BlockDown.png", false);
+		Texture2D* munchieTexture = new Texture2D();
+		munchieTexture->Load("Textures/Food/Munchie.png", true);
+
 		string line;
 
 		//converts level file to char array
@@ -1362,6 +1367,10 @@ void Pacman::UpdatePacman(int elapsedTime)
 	_pacman->_SourceRect->X = _pacman->_SourceRect->Width * _pacman->_Frame;
 	if (_pacman->health == 0)
 	{
+		if (_pacman->dead == false)
+		{
+			Audio::Play(_start);
+		}
 		_pacman->dead = true;
 	}
 }
