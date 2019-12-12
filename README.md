@@ -6,6 +6,6 @@
 - [X] Level Select
 - [X] Dynamic Enemies
 - [X] Dynamic Munchies
-- [ ] Audio
+- [X] Audio
 - [ ] More Levels
 - [X] Level Editor

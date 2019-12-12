@@ -144,6 +144,7 @@ private:
 	string levelLoc;
 	int munchieCount;
 	bool win;
+	bool playSound;
 
 	bool pacmanProj;
 	

@@ -42,6 +42,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv),_cPacmanSpeed(0.1f),_c
 	editInitial = false;
 	tile = 'a';
 	levelLoaded = false;
+	playSound = true;
 
 	_collect = new SoundEffect();
 	_wa = new SoundEffect();
@@ -187,33 +188,36 @@ void Pacman::Update(int elapsedTime)
 			if (!_paused)
 			{
 				Pacman::Input(elapsedTime, keyboardState, mouseState);
+				if (editor == false)
+				{
+					Pacman::UpdateMunchie(elapsedTime);
 
-				Pacman::UpdateMunchie(elapsedTime);
+					Pacman::UpdatePacman(elapsedTime);
 
-				Pacman::UpdatePacman(elapsedTime);
+					Pacman::UpdateGhost(elapsedTime);
 
-				Pacman::UpdateGhost(elapsedTime);
-
-				if (_pacman->sprint == true)
-				{
-					Pacman::Sprint();
+					if (_pacman->sprint == true)
+					{
+						Pacman::Sprint();
+					}
+					if (_pacman->super == true)
+					{
+						Pacman::Super();
+					}
+					if (_pacman->immune == true)
+					{
+						Pacman::Immune();
+					}
+					if (_pacman->dead)
+					{
+						_paused = true;
+					}
+					else
+					{
+						_paused = false;
+					}
 				}
-				if (_pacman->super == true)
-				{
-					Pacman::Super();
-				}
-				if (_pacman->immune == true)
-				{
-					Pacman::Immune();
-				}
-				if (_pacman->dead)
-				{
-					_paused = true;
-				}
-				else
-				{
-					_paused = false;
-				}
+		
 				if (editor == true)
 				{
 					Pacman::Editor();
@@ -480,6 +484,30 @@ void Pacman::CheckCollision()
 					_tile[i]->texture->Load("Textures/Level/4Way.png", false);
 					file[i] = 'L';
 				}
+				if (tile == 'W')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/BlockLeft.png", false);
+					file[i] = 'W';
+				}
+				if (tile == 'U')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/BlockRight.png", false);
+					file[i] = 'U';
+				}
+				if (tile == 'Y')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/BlockUp.png", false);
+					file[i] = 'Y';
+				}
+				if (tile == 'V')
+				{
+					_tile[i]->texture = new Texture2D();
+					_tile[i]->texture->Load("Textures/Level/BlockDown.png", false);
+					file[i] = 'V';
+				}
 				if (tile == 'Z')
 				{
 					_tile[i]->texture = new Texture2D();
@@ -611,6 +639,14 @@ string Pacman::ChooseLevel(Input::KeyboardState* state)
 	{
 		return string("Levels/3.txt");
 	}
+	if (state->IsKeyDown(Input::Keys::NUMPAD4))
+	{
+		return string("Levels/4.txt");
+	}
+	if (state->IsKeyDown(Input::Keys::NUMPAD5))
+	{
+		return string("Levels/5.txt");
+	}
 	return string();
 }
 
@@ -689,6 +725,14 @@ void Pacman::CreateLevel(string location)
 	tile4Way->Load("Textures/Level/4Way.png", false);
 	Texture2D* tileBlank = new Texture2D();
 	tileBlank->Load("Textures/Level/Blank.png", false);
+	Texture2D* tileBlockLeft = new Texture2D();
+	tileBlockLeft->Load("Textures/Level/BlockLeft.png", false);
+	Texture2D* tileBlockRight = new Texture2D();
+	tileBlockRight->Load("Textures/Level/BlockRight.png", false);
+	Texture2D* tileBlockUp = new Texture2D();
+	tileBlockUp->Load("Textures/Level/BlockUp.png", false);
+	Texture2D* tileBlockDown = new Texture2D();
+	tileBlockDown->Load("Textures/Level/BlockDown.png", false);
 	Texture2D* munchieTexture = new Texture2D();
 	munchieTexture->Load("Textures/Food/Munchie.png", true);
 
@@ -779,6 +823,26 @@ void Pacman::CreateLevel(string location)
 				_tile[i]->texture = tile4Way;
 				_tile[i]->collision = 1;
 			}
+			if (levelArr[i] == 'W')
+			{
+				_tile[i]->texture = tileBlockLeft;
+				_tile[i]->collision = 1;
+			}
+			if (levelArr[i] == 'U')
+			{
+				_tile[i]->texture = tileBlockRight;
+				_tile[i]->collision = 1;
+			}
+			if (levelArr[i] == 'Y')
+			{
+				_tile[i]->texture = tileBlockUp;
+				_tile[i]->collision = 1;
+			}
+			if (levelArr[i] == 'V')
+			{
+				_tile[i]->texture = tileBlockDown;
+				_tile[i]->collision = 1;
+			}
 			if (levelArr[i] == 'Z')
 			{
 				_tile[i]->texture = tileBlank;
@@ -833,7 +897,7 @@ void Pacman::Editor()
 		_editor->location = "Levels/X.txt";
 		cout << "Enter A One Word File Name" << endl;
 		cin >> _editor->fileName;
-		cout << "A = BendDownLeft\nB = BendDownRight\nC = BendUpLeft\nD = BendUpRight\nE = StraightLeftRight\nF = StraightUpDown\nG = 3WayLeft\nI = 3WayUp\nJ = 3WayRight\nK = 3WayDown\nL = 4Way\nM = Munchie\nH = Cherry\nZ = Empty\nX = Enemy\nP = Pacman" << endl;
+		cout << "A = BendDownLeft\nB = BendDownRight\nC = BendUpLeft\nD = BendUpRight\nE = StraightLeftRight\nF = StraightUpDown\nG = 3WayLeft\nI = 3WayUp\nJ = 3WayRight\nK = 3WayDown\nL = 4Way\nW = BlockLeft\nU = BlockRight\nY = BlockUp\nV = BlockDown\nM = Munchie\nH = Cherry\nZ = Empty\nX = Enemy\nP = Pacman" << endl;
 		cout << "Press S To Save The File When You're Ready" << endl;
 	}
 	if (levelSave == false && editInitial == false)
@@ -916,7 +980,7 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseSta
 		{
 			if (_pacman->_Direction == 2 || _pacman->_Direction == 0)
 			{
-				if (TileCollisionCheck(_pacmanColl->position->X, _pacmanColl->position->Y, 1, 30,
+				if (TileCollisionCheck(_pacmanColl->position->X, _pacmanColl->position->Y, 1, 26,
 					_tile[i]->position->X, _tile[i]->position->Y, _tile[i]->rect->Width, _tile[i]->rect->Height))
 				{
 					//Audio::Play(_coll);
@@ -925,7 +989,7 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseSta
 			}
 			if (_pacman->_Direction == 3 || _pacman->_Direction == 1)
 			{
-				if (TileCollisionCheck(_pacmanColl->position->X, _pacmanColl->position->Y, 30, 1,
+				if (TileCollisionCheck(_pacmanColl->position->X, _pacmanColl->position->Y, 26, 1,
 					_tile[i]->position->X, _tile[i]->position->Y, _tile[i]->rect->Width, _tile[i]->rect->Height))
 				{
 					//Audio::Play(_coll);
@@ -939,7 +1003,7 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseSta
 	if (state->IsKeyDown(Input::Keys::A)) {
 		_pacman->_Position->X -= _pacman->speed;
 		_pacman->_Direction = 2;
-		_pacmanColl->position->Y = _pacman->_Position->Y+1;
+		_pacmanColl->position->Y = _pacman->_Position->Y+3;
 		_pacmanColl->position->X = _pacman->_Position->X;
 	}
 	// Moves Character Right
@@ -947,7 +1011,7 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseSta
 	{
 		_pacman->_Position->X += _pacman->speed;
 		_pacman->_Direction = 0;
-		_pacmanColl->position->Y = _pacman->_Position->Y+1;
+		_pacmanColl->position->Y = _pacman->_Position->Y+3;
 		_pacmanColl->position->X = _pacman->_Position->X + 32;
 	}
 	// Moves Character Up
@@ -955,14 +1019,14 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseSta
 		_pacman->_Position->Y -= _pacman->speed;
 		_pacman->_Direction = 3;
 		_pacmanColl->position->Y = _pacman->_Position->Y;
-		_pacmanColl->position->X = _pacman->_Position->X+1;
+		_pacmanColl->position->X = _pacman->_Position->X+3;
 	}
 	// Moves Character Down
 	else if (state->IsKeyDown(Input::Keys::S)) {
 		_pacman->_Position->Y += _pacman->speed;
 		_pacman->_Direction = 1;
 		_pacmanColl->position->Y = _pacman->_Position->Y+32;
-		_pacmanColl->position->X = _pacman->_Position->X+1;
+		_pacmanColl->position->X = _pacman->_Position->X+3;
 	}
 	if (state->IsKeyDown(Input::Keys::ESCAPE))
 	{
@@ -1002,6 +1066,14 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseSta
 			tile = 'K';
 		if (state->IsKeyDown(Input::Keys::L))
 			tile = 'L';
+		if (state->IsKeyDown(Input::Keys::W))
+			tile = 'W';
+		if (state->IsKeyDown(Input::Keys::U))
+			tile = 'U';
+		if (state->IsKeyDown(Input::Keys::Y))
+			tile = 'Y';
+		if (state->IsKeyDown(Input::Keys::V))
+			tile = 'V';
 		if (state->IsKeyDown(Input::Keys::Z))
 			tile = 'Z';
 		if (state->IsKeyDown(Input::Keys::M))
@@ -1102,6 +1174,7 @@ void Pacman::Sprint()
 void Pacman::Super()
 {
 	scoreMulti = 2.0f;
+	_pacman->immune = false;
 	_pacman->superTimer++;
 	if (_pacman->superTimer == 300)
 	{
@@ -1253,14 +1326,17 @@ void Pacman::UpdatePacman(int elapsedTime)
 		if (_pacman->_Frame > 1)
 			_pacman->_Frame = 0;
 		_pacman->_CurrentFrameTime = 0;
+		playSound = true;
 	}
-	if (_pacman->_Frame == 0)
+	if (_pacman->_Frame == 0 && playSound == true)
 	{
 		Audio::Play(_wa);
+		playSound = false;
 	}
-	else if (_pacman->_Frame == 1)
+	else if (_pacman->_Frame == 1 && playSound == true)
 	{
 		Audio::Play(_ka);
+		playSound = false;
 	}
 	//Pacman Source Rect
 	//Changes Pacmans Direction
