@@ -7,5 +7,5 @@
 - [X] Dynamic Enemies
 - [X] Dynamic Munchies
 - [X] Audio
-- [ ] More Levels
+- [X] More Levels
 - [X] Level Editor
