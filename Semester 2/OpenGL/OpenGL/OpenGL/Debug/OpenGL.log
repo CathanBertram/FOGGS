@@ -1,0 +1,8 @@
+﻿  OpenGL.cpp
+C:\Users\b012521i\OneDrive - Staffordshire University\FOGGS\SEMESTER 2\OpenGL\OpenGL\OpenGL\OpenGL.cpp(57): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\b012521i\OneDrive - Staffordshire University\FOGGS\SEMESTER 2\OpenGL\OpenGL\OpenGL\OpenGL.cpp(59): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\b012521i\OneDrive - Staffordshire University\FOGGS\SEMESTER 2\OpenGL\OpenGL\OpenGL\OpenGL.cpp(61): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\b012521i\OneDrive - Staffordshire University\FOGGS\SEMESTER 2\OpenGL\OpenGL\OpenGL\OpenGL.cpp(63): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\b012521i\OneDrive - Staffordshire University\FOGGS\SEMESTER 2\OpenGL\OpenGL\OpenGL\OpenGL.cpp(67): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\b012521i\OneDrive - Staffordshire University\FOGGS\SEMESTER 2\OpenGL\OpenGL\OpenGL\OpenGL.cpp(69): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+  OpenGL.vcxproj -> C:\Users\b012521i\OneDrive - Staffordshire University\FOGGS\SEMESTER 2\OpenGL\OpenGL\Debug\OpenGL.exe
