@@ -5,15 +5,15 @@ Vertex Cube::indexedVertices[] = { 1, 1, 1,  -1, 1, 1,  // v0,v1,
 				1,-1,-1,   1, 1,-1,    // v4,v5
 				-1, 1,-1,   -1,-1,-1 }; // v6,v7
 
-Color Cube::indexedColors[] = { 1, 1, 1,   1, 1, 0,   // v0,v1,
+/*Color Cube::indexedColors[] = { 1, 1, 1,   1, 1, 0,   // v0,v1,
 				1, 0, 0,   1, 0, 1,   // v2,v3
 				0, 0, 1,   0, 1, 1,   // v4,v5
-				0, 1, 0,   0, 0, 0 }; //v6,v7
+				0, 1, 0,   0, 0, 0 }; //v6,v7*/
 
-/*Color Cube::indexedColors[] = { 1, 1, 1,   1, 1, 1,   // v0,v1,
+Color Cube::indexedColors[] = { 1, 0, 1,   1, 1, 1,   // v0,v1,
 				1, 1, 1,   1, 1, 1,   // v2,v3
-				1, 1, 1,   1, 1, 1,   // v4,v5
-				1, 1, 1,   1, 1, 1 }; //v6,v7*/
+				0, 1, 1,   1, 1, 1,   // v4,v5
+				1, 1, 1,   1, 1, 0 }; //v6,v7
 
 GLushort Cube::indices[] = { 0, 1, 2,  2, 3, 0,      // front
 				0, 3, 4,  4, 5, 0,      // right
