@@ -36,30 +36,18 @@ Color HelloGL::colors[] = { 1, 1, 1,   1, 1, 0,   1, 0, 0,      // v0-v1-v2 (fro
 				0, 0, 1,   0, 0, 0,   0, 1, 0,      // v4-v7-v6 (back)
 				0, 1, 0,   0, 1, 1,   0, 0, 1 };    // v6-v5-v4
 
-Vertex HelloGL::indexedVertices[] = { 1, 1, 1,  -1, 1, 1,  // v0,v1,
-				-1,-1, 1,   1,-1, 1,   // v2,v3
-				1,-1,-1,   1, 1,-1,    // v4,v5
-				-1, 1,-1,   -1,-1,-1 }; // v6,v7
-
-Color HelloGL::indexedColors[] = { 1, 1, 1,   1, 1, 0,   // v0,v1,
-				1, 0, 0,   1, 0, 1,   // v2,v3
-				0, 0, 1,   0, 1, 1,   // v4,v5
-				0, 1, 0,   0, 0, 0 }; //v6,v7
-
-GLushort HelloGL::indices[] = { 0, 1, 2,  2, 3, 0,      // front
-				0, 3, 4,  4, 5, 0,      // right
-				0, 5, 6,  6, 1, 0,      // top
-				1, 6, 7,  7, 2, 1,      // left
-				7, 4, 3,  3, 2, 7,      // bottom
-				4, 7, 6,  6, 5, 4 };    // back
-
-
 HelloGL::HelloGL(int argc, char* argv[])
 {
 	//Initialise Camera
 	camera = new Camera();
+	//Initialise Cube
+	for (int i = 0; i < CUBE_NUM; i++)
+	{
+		cube[i] = new Cube(((rand()%500)/5.0f)-50.0f,((rand()%500)/5.0f)-50.0f,(rand()%1000)/10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));
+		//cube[i] = new Cube(i,i,-2);
+	}
 	//Initialise Camera Variables
-	camera->eye.x = 0.0f; camera->eye.y = 0.0f; camera->eye.z = -10.0f;
+	camera->eye.x = 0.0f; camera->eye.y = 0.0f; camera->eye.z = -1.0f;
 	camera->center.x = 0.0f; camera->center.y = 0.0f; camera->center.z = 0.0f;
 	camera->up.x = 0.0f; camera->up.y = 1.0f; camera->up.z = 0.0f;
 	//Initialise Other Variables
@@ -74,7 +62,7 @@ HelloGL::HelloGL(int argc, char* argv[])
 	glutInitDisplayMode(GLUT_DOUBLE);
 	glutInitWindowSize(800, 800);
 	glutInitWindowPosition(100, 100);
-	glutCreateWindow("simple OpenGL Program");
+	glutCreateWindow("qubz");
 	glutDisplayFunc(GLUTCallbacks::Display);
 	glutTimerFunc(1000/REFRESHRATE,GLUTCallbacks::Timer,1000/REFRESHRATE);
 	glutKeyboardFunc(GLUTCallbacks::Keyboard);
@@ -82,7 +70,7 @@ HelloGL::HelloGL(int argc, char* argv[])
 	glLoadIdentity();
 	glViewport(0, 0, 800, 800);
 	gluPerspective(45, 1, 0, 1000);
-	glMatrixMode(GL_MODELVIEW);
+	glMatrixMode(GL_MODELVIEW); 
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
@@ -92,16 +80,26 @@ HelloGL::HelloGL(int argc, char* argv[])
 HelloGL::~HelloGL()
 {
 	delete camera;
+	for (int i = 0; i < CUBE_NUM; i++)
+	{
+		delete cube[i];
+	}
 }
 
 void HelloGL::Display()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	DrawCubeArrayAlt();
+	for (int i = 0; i < CUBE_NUM; i++)
+	{
+	cube[i]->Draw();
+	}
 	glFlush();
 	glutSwapBuffers();
 }
 
+/*
+
+Draw Cube Methods
 void HelloGL::DrawCube()
 {
 	glPushMatrix();
@@ -271,6 +269,7 @@ void HelloGL::DrawCubeIndexedAlt()
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 }
+*/
 
 void HelloGL::DrawTriangle()
 {
@@ -314,19 +313,19 @@ void HelloGL::Keyboard(unsigned char key, int x, int y)
 {
 	if (key == 'w')
 	{
-		camera->eye.z -= 0.1f;
+		camera->eye.z += 0.1f;
 	}
 	else if (key == 's')
 	{
-		camera->eye.z += 0.1f;
+		camera->eye.z -= 0.1f;
 	}
 	else if (key == 'a')
 	{
-		camera->center.x -= 0.1f;
+		camera->center.x += 0.1f;
 	}
 	else if (key == 'd')
 	{
-		camera->center.x += 0.1f;
+		camera->center.x -= 0.1f;
 	}
 }
 
@@ -336,8 +335,10 @@ void HelloGL::Update()
 	gluLookAt(camera->eye.x, camera->eye.y, camera->eye.z, camera->center.x, 
 			camera->center.y, camera->center.z, 
 			camera->up.x, camera->up.y, camera->up.z);
-
-
+	for (int i = 0; i < CUBE_NUM; i++)
+	{
+	cube[i]->Update();
+	}
 	rotation += 1.0f;
 	if (rotation>=360.0f)
 	{

@@ -1,2 +1,3 @@
 ﻿  HelloGL.cpp
-  OpenGL.vcxproj -> D:\GITHUB\FOGGS\Semester 2\OpenGL\Debug\OpenGL.exe
+C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  OpenGL.vcxproj -> C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\Debug\OpenGL.exe
