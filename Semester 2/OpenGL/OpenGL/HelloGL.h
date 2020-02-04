@@ -8,7 +8,7 @@
 #include "Cube.h"
 
 #define REFRESHRATE 60
-#define CUBE_NUM 10000
+#define CUBE_NUM 100000
 
 class HelloGL
 {

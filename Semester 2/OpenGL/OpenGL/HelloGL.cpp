@@ -43,13 +43,13 @@ HelloGL::HelloGL(int argc, char* argv[])
 	//Initialise Cube
 	for (int i = 0; i < CUBE_NUM; i++)
 	{
-		cube[i] = new Cube(((rand()%500)/5.0f)-50.0f,((rand()%500)/5.0f)-50.0f,(rand()%1000)/10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));
+		cube[i] = new Cube(((rand()%100)/5.0f)-10.0f,((rand()%100)/5.0f)-10.0f,(rand()%1200)/10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));
 		//cube[i] = new Cube(i,i,-2);
 	}
 	//Initialise Camera Variables
-	camera->eye.x = 0.0f; camera->eye.y = 0.0f; camera->eye.z = -1.0f;
+	camera->eye.x = 0.0f; camera->eye.y = 0.0f; camera->eye.z = -5.0f;
 	camera->center.x = 0.0f; camera->center.y = 0.0f; camera->center.z = 0.0f;
-	camera->up.x = 0.0f; camera->up.y = 1.0f; camera->up.z = 0.0f;
+	camera->up.x = 0.0f; camera->up.y =1.0f; camera->up.z = 0.0f;
 	//Initialise Other Variables
 	rotation = 0.0f;
 	color1 = 1.0f;
@@ -69,7 +69,7 @@ HelloGL::HelloGL(int argc, char* argv[])
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glViewport(0, 0, 800, 800);
-	gluPerspective(45, 1, 0, 1000);
+	gluPerspective(179, 1, 0, 1000);
 	glMatrixMode(GL_MODELVIEW); 
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -313,19 +313,19 @@ void HelloGL::Keyboard(unsigned char key, int x, int y)
 {
 	if (key == 'w')
 	{
-		camera->eye.z += 0.1f;
+		camera->eye.z += 1.0f;
 	}
 	else if (key == 's')
 	{
-		camera->eye.z -= 0.1f;
+		camera->eye.z -= 1.0f;
 	}
 	else if (key == 'a')
 	{
-		camera->center.x += 0.1f;
+		camera->center.x += 1.0f;
 	}
 	else if (key == 'd')
 	{
-		camera->center.x -= 0.1f;
+		camera->center.x -= 1.0f;
 	}
 }
 
