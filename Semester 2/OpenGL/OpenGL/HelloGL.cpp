@@ -327,6 +327,21 @@ void HelloGL::Keyboard(unsigned char key, int x, int y)
 	{
 		camera->center.x -= 1.0f;
 	}
+	switch (key)
+	{
+	case 'w':
+		camera->eye.z += 1.0f;
+		break;
+	case 's':
+		camera->eye.z -= 1.0f;
+	case 'a':
+		camera->center.x += 1.0f;
+	case 'd':
+		camera->center.x -= 1.0f;
+	case 27:
+		exit(0);
+		break;
+	}
 }
 
 void HelloGL::Update()
