@@ -82,10 +82,13 @@ HelloGL::HelloGL(int argc, char* argv[])
 HelloGL::~HelloGL()
 {
 	delete camera;
+	camera = nullptr;
 	for (int i = 0; i < CUBE_NUM; i++)
 	{
 		delete cube[i];
+		cube[i] = nullptr;
 	}
+	delete cube;
 }
 
 void HelloGL::Display()
@@ -344,7 +347,7 @@ void HelloGL::Keyboard(unsigned char key, int x, int y)
 		camera->center.x -= 1.0f;
 		break;
 	case 27:
-		exit(0);
+		glutLeaveMainLoop();
 		break;
 	}
 }
