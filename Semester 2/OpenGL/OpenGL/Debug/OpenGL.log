@@ -1,6 +1,9 @@
 ﻿  GlutCallbacks.cpp
   HelloGL.cpp
-C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(47,170): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(47,149): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(47,128): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   main.cpp
   Generating Code...
-  OpenGL.vcxproj -> C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\Debug\OpenGL.exe
+D:\GITHUB\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(47,107): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  OpenGL.vcxproj -> D:\GITHUB\FOGGS\Semester 2\OpenGL\Debug\OpenGL.exe

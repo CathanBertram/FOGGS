@@ -60,7 +60,7 @@ HelloGL::HelloGL(int argc, char* argv[])
 	//Initialise OpenGL Features
 	GLUTCallbacks::Init(this);
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(800, 800);
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow("qubz");
@@ -70,9 +70,10 @@ HelloGL::HelloGL(int argc, char* argv[])
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glViewport(0, 0, 800, 800);
-	gluPerspective(120, 1, 0, 1000);
+	gluPerspective(120, 1, 1, 1000);
 	glMatrixMode(GL_MODELVIEW); 
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 	glCullFace(GL_BACK);
 
 	glutMainLoop();
@@ -89,7 +90,7 @@ HelloGL::~HelloGL()
 
 void HelloGL::Display()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (int i = 0; i < CUBE_NUM; i++)
 	{
 	cube[i]->Draw();
@@ -351,8 +352,8 @@ void HelloGL::Keyboard(unsigned char key, int x, int y)
 void HelloGL::Update()
 {
 	glLoadIdentity();
-	gluLookAt(camera->eye.x, camera->eye.y, camera->eye.z, camera->center.x, 
-			camera->center.y, camera->center.z, 
+	gluLookAt(camera->eye.x, camera->eye.y, camera->eye.z, 
+			camera->center.x, camera->center.y, camera->center.z, 
 			camera->up.x, camera->up.y, camera->up.z);
 	for (int i = 0; i < CUBE_NUM; i++)
 	{
