@@ -41,6 +41,7 @@ HelloGL::HelloGL(int argc, char* argv[])
 	//Initialise Camera
 	camera = new Camera();
 	//Initialise Cube
+	Cube::Load((char*)"OBJs/cube2.txt");
 	for (int i = 0; i < CUBE_NUM; i++)
 	{
 		cube[i] = new Cube(((rand()%100)/5.0f)-10.0f,((rand()%100)/5.0f)-10.0f,(rand()%1200)/10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));
@@ -69,7 +70,7 @@ HelloGL::HelloGL(int argc, char* argv[])
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glViewport(0, 0, 800, 800);
-	gluPerspective(179, 1, 0, 1000);
+	gluPerspective(120, 1, 0, 1000);
 	glMatrixMode(GL_MODELVIEW); 
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -334,10 +335,13 @@ void HelloGL::Keyboard(unsigned char key, int x, int y)
 		break;
 	case 's':
 		camera->eye.z -= 1.0f;
+		break;
 	case 'a':
 		camera->center.x += 1.0f;
+		break;
 	case 'd':
 		camera->center.x -= 1.0f;
+		break;
 	case 27:
 		exit(0);
 		break;
@@ -353,44 +357,6 @@ void HelloGL::Update()
 	for (int i = 0; i < CUBE_NUM; i++)
 	{
 	cube[i]->Update();
-	}
-	rotation += 1.0f;
-	if (rotation>=360.0f)
-	{
-		rotation = 0.0f;
-	}
-	if (color1 >1.0f)
-	{
-		c1r = true;
-	}
-	if (color1 < 0.0f)
-	{
-		c1r =false;
-	}
-	if (color2 > 1.0f)
-	{
-		c2r = true;
-	}
-	if (color2 < 0.0f)
-	{
-		c2r = false;
-	}
-
-	if (c1r == true)
-	{
-		color1 -= 0.01f;
-	}
-	else
-	{
-		color1 += 0.01f;
-	}
-	if (c2r == true)
-	{
-		color2 -= 0.01f;
-	}
-	else
-	{
-		color2 += 0.01f;
 	}
 
 	glutPostRedisplay();
