@@ -1,5 +1,11 @@
 #pragma once
 
+#include <windows.h>
+#include <gl/GL.h>
+#include <gl/GLU.h>
+#include "GL\freeglut.h"
+
+
 struct Vector3
 {
 	float x;
@@ -19,8 +25,16 @@ struct Color
 	GLfloat r, g, b;
 };
 
+
 struct Vertex
 {
 	GLfloat x, y, z;
 };
 
+struct Mesh
+{
+	Vertex* vertices;
+	Color* colors;
+	GLushort* indices;
+	int vertexCount, colorCount, indexCount;
+};

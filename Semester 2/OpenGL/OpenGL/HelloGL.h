@@ -5,10 +5,11 @@
 #include "GL\freeglut.h"
 #include "GLUTCallbacks.h"
 #include "Structures.h"
-#include "Cube.h"
+#include "FlyingObjects.h"
+#include "MeshLoader.h"
 
 #define REFRESHRATE 60
-#define CUBE_NUM 500
+#define CUBE_NUM 200
 
 class HelloGL
 {
@@ -19,21 +20,29 @@ public:
 
 	void Display();
 
-	/*void DrawCube();
-
-	void DrawCubeArray();
-
-	void DrawCubeArrayAlt();
-
-	void DrawCubeIndexed();
-
-	void DrawCubeIndexedAlt();*/
-
+	//Draw Shape Functions
 	void DrawTriangle();
 
 	void DrawPolygon();
 
+	//Inpout Functions
 	void Keyboard(unsigned char key, int x, int y);
+
+	void KeyboardUp(unsigned char key, int x, int y);
+
+	void Special(int key, int x, int y);
+
+	void SpecialUp(int key, int x, int y);
+
+	void Mouse(int button, int state, int x, int y);
+
+	void Motion(int x, int y);
+
+	void PassiveMotion(int x, int y);
+
+	//Init Functions
+	void InitObjects();
+	void InitGL(int argc, char* argv[]);
 
 	void Update();
 
@@ -48,5 +57,7 @@ private:
 	static Color colors[];
 
 	Camera* camera;
-	Cube* cube[CUBE_NUM];
+	FlyingObjects* cube[CUBE_NUM];
+	FlyingObjects* cube2[CUBE_NUM];
+	FlyingObjects* pyramid[CUBE_NUM];
 };

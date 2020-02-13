@@ -1,81 +1,17 @@
 #include "HelloGL.h"
 
-Vertex HelloGL::vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,      // v0-v1-v2 (front)
-				-1,-1, 1,   1,-1, 1,   1, 1, 1,      // v2-v3-v0
-
-				1, 1, 1,   1,-1, 1,   1,-1,-1,      // v0-v3-v4 (right)
-				1,-1,-1,   1, 1,-1,   1, 1, 1,      // v4-v5-v0
-
-				1, 1, 1,   1, 1,-1,  -1, 1,-1,      // v0-v5-v6 (top)
-				-1, 1,-1,  -1, 1, 1,   1, 1, 1,      // v6-v1-v0
-
-				-1, 1, 1,  -1, 1,-1,  -1,-1,-1,      // v1-v6-v7 (left)
-				-1,-1,-1,  -1,-1, 1,  -1, 1, 1,      // v7-v2-v1
-
-				-1,-1,-1,   1,-1,-1,   1,-1, 1,      // v7-v4-v3 (bottom)
-				1,-1, 1,  -1,-1, 1,  -1,-1,-1,      // v3-v2-v7
-
-				1,-1,-1,  -1,-1,-1,  -1, 1,-1,      // v4-v7-v6 (back)
-				-1, 1,-1,   1, 1,-1,   1,-1,-1 };    // v6-v5-v4
-
-Color HelloGL::colors[] = { 1, 1, 1,   1, 1, 0,   1, 0, 0,      // v0-v1-v2 (front)
-				1, 0, 0,   1, 0, 1,   1, 1, 1,      // v2-v3-v0
-
-				1, 1, 1,   1, 0, 1,   0, 0, 1,      // v0-v3-v4 (right)
-				0, 0, 1,   0, 1, 1,   1, 1, 1,      // v4-v5-v0
-
-				1, 1, 1,   0, 1, 1,   0, 1, 0,      // v0-v5-v6 (top)
-				0, 1, 0,   1, 1, 0,   1, 1, 1,      // v6-v1-v0
-
-				1, 1, 0,   0, 1, 0,   0, 0, 0,      // v1-v6-v7 (left)
-				0, 0, 0,   1, 0, 0,   1, 1, 0,      // v7-v2-v1
-
-				0, 0, 0,   0, 0, 1,   1, 0, 1,      // v7-v4-v3 (bottom)
-				1, 0, 1,   1, 0, 0,   0, 0, 0,      // v3-v2-v7
-
-				0, 0, 1,   0, 0, 0,   0, 1, 0,      // v4-v7-v6 (back)
-				0, 1, 0,   0, 1, 1,   0, 0, 1 };    // v6-v5-v4
-
 HelloGL::HelloGL(int argc, char* argv[])
 {
-	//Initialise Camera
-	camera = new Camera();
-	//Initialise Cube
-	Cube::Load((char*)"OBJs/cube2.txt");
-	for (int i = 0; i < CUBE_NUM; i++)
-	{
-		cube[i] = new Cube(((rand()%100)/5.0f)-10.0f,((rand()%100)/5.0f)-10.0f,(rand()%1200)/10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));
-		//cube[i] = new Cube(i,i,-2);
-	}
-	//Initialise Camera Variables
-	camera->eye.x = 0.0f; camera->eye.y = 0.0f; camera->eye.z = -5.0f;
-	camera->center.x = 0.0f; camera->center.y = 0.0f; camera->center.z = 0.0f;
-	camera->up.x = 0.0f; camera->up.y =1.0f; camera->up.z = 0.0f;
+	InitGL(argc, argv);
+	InitObjects();
+
 	//Initialise Other Variables
 	rotation = 0.0f;
 	color1 = 1.0f;
 	color2 = 0.0f;
 	c1r = false;
 	c2r = false;
-	//Initialise OpenGL Features
-	GLUTCallbacks::Init(this);
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
-	glutInitWindowSize(800, 800);
-	glutInitWindowPosition(100, 100);
-	glutCreateWindow("qubz");
-	glutDisplayFunc(GLUTCallbacks::Display);
-	glutTimerFunc(1000/REFRESHRATE,GLUTCallbacks::Timer,1000/REFRESHRATE);
-	glutKeyboardFunc(GLUTCallbacks::Keyboard);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glViewport(0, 0, 800, 800);
-	gluPerspective(120, 1, 1, 1000);
-	glMatrixMode(GL_MODELVIEW); 
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
-	glCullFace(GL_BACK);
-
+	
 	glutMainLoop();
 }
 
@@ -97,184 +33,12 @@ void HelloGL::Display()
 	for (int i = 0; i < CUBE_NUM; i++)
 	{
 	cube[i]->Draw();
+	cube2[i]->Draw();
+	pyramid[i]->Draw();
 	}
 	glFlush();
 	glutSwapBuffers();
 }
-
-/*
-
-Draw Cube Methods
-void HelloGL::DrawCube()
-{
-	glPushMatrix();
-	glTranslatef(0.0f, 0.0f, -2.0f);
-	glRotatef(rotation, -1.0f, 0.0f, 0.0f);
-	glRotatef(rotation/2, 0.0f, 1.0f, 0.0f);
-	glBegin(GL_TRIANGLES);
-	{
-		// face v0-v1-v2
-		glColor3f(1, 1, 1);
-		glVertex3f(1, 1, 1);
-		glColor3f(1, 1, 0);
-		glVertex3f(-1, 1, 1);
-		glColor3f(1, 0, 0);
-		glVertex3f(-1, -1, 1);
-		// face v2-v3-v0
-		glColor3f(1, 0, 0);
-		glVertex3f(-1, -1, 1);
-		glColor3f(1, 0, 1);
-		glVertex3f(1, -1, 1);
-		glColor3f(1, 1, 1);
-		glVertex3f(1, 1, 1);
-		// face v0-v3-v4
-		glColor3f(1, 1, 1);
-		glVertex3f(1, 1, 1);
-		glColor3f(1, 0, 1);
-		glVertex3f(1, -1, 1);
-		glColor3f(0, 0, 1);
-		glVertex3f(1, -1, -1);
-		// face v4-v5-v0
-		glColor3f(0, 0, 1);
-		glVertex3f(1, -1, -1);
-		glColor3f(0, 1, 1);
-		glVertex3f(1, 1, -1);
-		glColor3f(1, 1, 1);
-		glVertex3f(1, 1, 1);
-		// face v0-v5-v6
-		glColor3f(1, 1, 1);
-		glVertex3f(1, 1, 1);
-		glColor3f(0, 1, 1);
-		glVertex3f(1, 1, -1);
-		glColor3f(0, 1, 0);
-		glVertex3f(-1, 1, -1);
-		// face v6-v1-v0
-		glColor3f(0, 1, 0);
-		glVertex3f(-1, 1, -1);
-		glColor3f(1, 1, 0);
-		glVertex3f(-1, 1, 1);
-		glColor3f(1, 1, 1);
-		glVertex3f(1, 1, 1);
-		// face  v1-v6-v7
-		glColor3f(1, 1, 0);
-		glVertex3f(-1, 1, 1);
-		glColor3f(0, 1, 0);
-		glVertex3f(-1, 1, -1);
-		glColor3f(0, 0, 0);
-		glVertex3f(-1, -1, -1);
-		// face v7-v2-v1
-		glColor3f(0, 0, 0);
-		glVertex3f(-1, -1, -1);
-		glColor3f(1, 0, 0);
-		glVertex3f(-1, -1, 1);
-		glColor3f(1, 1, 0);
-		glVertex3f(-1, 1, 1);
-		// face v7-v4-v3
-		glColor3f(0, 0, 0);
-		glVertex3f(-1, -1, -1);
-		glColor3f(0, 0, 1);
-		glVertex3f(1, -1, -1);
-		glColor3f(1, 0, 1);
-		glVertex3f(1, -1, 1);
-		// face v3-v2-v7
-		glColor3f(1, 0, 1);
-		glVertex3f(1, -1, 1);
-		glColor3f(1, 0, 0);
-		glVertex3f(-1, -1, 1);
-		glColor3f(0, 0, 0);
-		glVertex3f(-1, -1, -1);
-		// face v4-v7-v6
-		glColor3f(0, 0, 1);
-		glVertex3f(1, -1, -1);
-		glColor3f(0, 0, 0);
-		glVertex3f(-1, -1, -1);
-		glColor3f(0, 1, 0);
-		glVertex3f(-1, 1, -1);
-		// face v6-v5-v4
-		glColor3f(0, 1, 0);
-		glVertex3f(-1, 1, -1);
-		glColor3f(0, 1, 1);
-		glVertex3f(1, 1, -1);
-		glColor3f(0, 0, 1);
-		glVertex3f(1, -1, -1);
-
-		glEnd();
-	}
-	glPopMatrix();
-}
-
-void HelloGL::DrawCubeArray()
-{
-	glPushMatrix();
-	glTranslatef(0.0f, 0.0f, -2.0f);
-	glRotatef(rotation, -1.0f, 0.0f, 0.0f);
-	glRotatef(rotation / 2, 0.0f, 1.0f, 0.0f);
-	glBegin(GL_TRIANGLES);
-	for (int i = 0; i < 36; i++)
-	{
-		//glColor3f(colors[i].r, colors[i].g, colors[i].b);
-		//glVertex3f(vertices[i].x,vertices[i].y,vertices[i].z);
-		glColor3fv(&colors[i].r);
-		glVertex3fv(&vertices[i].x);
-	}
-	glEnd();
-
-	glPopMatrix();
-}
-
-void HelloGL::DrawCubeArrayAlt()
-{
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, vertices);
-	glColorPointer(3, GL_FLOAT, 0, colors);
-
-	glPushMatrix();
-	glTranslatef(0.0f, 0.0f, -2.0f);
-	glRotatef(rotation, -1.0f, 0.0f, 0.0f);
-	glRotatef(rotation / 2, 0.0f, 1.0f, 0.0f);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glPopMatrix();
-
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-}
-
-void HelloGL::DrawCubeIndexed()
-{
-	glPushMatrix();
-	glTranslatef(0.0f, 0.0f, -2.0f);
-	glRotatef(rotation, -1.0f, 0.0f, 0.0f);
-	glRotatef(rotation / 2, 0.0f, 1.0f, 0.0f);
-	glBegin(GL_TRIANGLES);
-	for (int i = 0; i < 36; i++)
-	{
-		glColor3f(indexedColors[indices[i]].r, indexedColors[indices[i]].g, indexedColors[indices[i]].b);
-		glVertex3f(indexedVertices[indices[i]].x, indexedVertices[indices[i]].y, indexedVertices[indices[i]].z);
-	}
-	glEnd();
-}
-
-void HelloGL::DrawCubeIndexedAlt()
-{
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, indexedVertices);
-	glColorPointer(3, GL_FLOAT, 0, indexedColors);
-
-	glPushMatrix();
-	glTranslatef(0.0f, 0.0f, -2.0f);
-	glRotatef(rotation, -1.0f, 0.0f, 0.0f);
-	glRotatef(rotation / 2, 0.0f, 1.0f, 0.0f);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, indices);
-	glPopMatrix();
-
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-}
-*/
 
 void HelloGL::DrawTriangle()
 {
@@ -352,6 +116,74 @@ void HelloGL::Keyboard(unsigned char key, int x, int y)
 	}
 }
 
+void HelloGL::KeyboardUp(unsigned char key, int x, int y)
+{
+}
+
+void HelloGL::Special(int key, int x, int y)
+{
+}
+
+void HelloGL::SpecialUp(int key, int x, int y)
+{
+}
+
+void HelloGL::Mouse(int button, int state, int x, int y)
+{
+}
+
+void HelloGL::Motion(int x, int y)
+{
+}
+
+void HelloGL::PassiveMotion(int x, int y)
+{
+}
+
+void HelloGL::InitObjects()
+{
+	//Initialise Camera
+	camera = new Camera();
+	//Initialise Cube
+	Mesh* cubeMesh = MeshLoader::Load((char*)"OBJs/cube.txt");
+	Mesh* cube2Mesh = MeshLoader::Load((char*)"OBJs/cube2.txt");
+	Mesh* pyramidMesh = MeshLoader::Load((char*)"OBJs/pyramid.txt");
+	for (int i = 0; i < CUBE_NUM; i++)
+	{
+		cube[i] = new FlyingObjects(cubeMesh,((rand() % 100) / 5.0f) - 10.0f, ((rand() % 100) / 5.0f) - 10.0f, (rand() % 1200) / 10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));
+		cube2[i] = new FlyingObjects(cube2Mesh, ((rand() % 100) / 5.0f) - 10.0f, ((rand() % 100) / 5.0f) - 10.0f, (rand() % 1200) / 10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));
+		pyramid[i] = new FlyingObjects(pyramidMesh, ((rand() % 100) / 5.0f) - 10.0f, ((rand() % 100) / 5.0f) - 10.0f, (rand() % 1200) / 10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));
+	}
+	//Initialise Camera Variables
+	camera->eye.x = 0.0f; camera->eye.y = 0.0f; camera->eye.z = -5.0f;
+	camera->center.x = 0.0f; camera->center.y = 0.0f; camera->center.z = 0.0f;
+	camera->up.x = 0.0f; camera->up.y = 1.0f; camera->up.z = 0.0f;
+}
+
+void HelloGL::InitGL(int argc, char* argv[])
+{
+	//Initialise OpenGL Features
+	GLUTCallbacks::Init(this);
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
+	glutInitWindowSize(800, 800);
+	glutInitWindowPosition(100, 100);
+	glutCreateWindow("qubz");
+	glutDisplayFunc(GLUTCallbacks::Display);
+	glutTimerFunc(1000 / REFRESHRATE, GLUTCallbacks::Timer, 1000 / REFRESHRATE);
+	glutKeyboardFunc(GLUTCallbacks::Keyboard);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glViewport(0, 0, 800, 800);
+	gluPerspective(120, 1, 1, 1000);
+	glMatrixMode(GL_MODELVIEW);
+	//Z Rendering
+	glEnable(GL_DEPTH_TEST);
+	//Backface Culling
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+}
+
 void HelloGL::Update()
 {
 	glLoadIdentity();
@@ -360,7 +192,9 @@ void HelloGL::Update()
 			camera->up.x, camera->up.y, camera->up.z);
 	for (int i = 0; i < CUBE_NUM; i++)
 	{
-	cube[i]->Update();
+		cube[i]->Update();
+		cube2[i]->Update();
+		pyramid[i]->Update();
 	}
 
 	glutPostRedisplay();

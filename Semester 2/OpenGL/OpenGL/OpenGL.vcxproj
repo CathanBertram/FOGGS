@@ -123,15 +123,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Bitmap.cpp" />
+    <ClCompile Include="FlyingObjects.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="HelloGL.cpp" />
     <ClCompile Include="GlutCallbacks.cpp" />
+    <ClCompile Include="MeshLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Cube.h" />
+    <ClInclude Include="Bitmap.h" />
+    <ClInclude Include="FlyingObjects.h" />
     <ClInclude Include="GlutCallbacks.h" />
     <ClInclude Include="HelloGL.h" />
+    <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="Structures.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
