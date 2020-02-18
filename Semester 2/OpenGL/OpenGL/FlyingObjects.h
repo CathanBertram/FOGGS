@@ -6,8 +6,9 @@
 #include "Structures.h"
 #include <fstream>
 #include <iostream>
+#include "SceneObject.h"
 
-class FlyingObjects
+class FlyingObjects : public SceneObject
 {
 public:
 	FlyingObjects(Mesh* mesh, float x, float y, float z, float rx, float ry, float rz, float rotate);
@@ -15,14 +16,11 @@ public:
 
 	void Draw();
 	void Update();
-	static bool Load(char* path);
 
 private:
 	Vector3 _position;
 	Vector3 _rotation;
 	float rotation;
 	float rotationSpeed;
-
-	Mesh* _mesh;
 };
 

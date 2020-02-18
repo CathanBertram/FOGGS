@@ -7,9 +7,11 @@
 #include "Structures.h"
 #include "FlyingObjects.h"
 #include "MeshLoader.h"
+#include "SceneObject.h"
+#include "StaticObjects.h"
 
 #define REFRESHRATE 60
-#define CUBE_NUM 200
+#define OBJ_NUM 200
 
 class HelloGL
 {
@@ -57,7 +59,6 @@ private:
 	static Color colors[];
 
 	Camera* camera;
-	FlyingObjects* cube[CUBE_NUM];
-	FlyingObjects* cube2[CUBE_NUM];
-	FlyingObjects* pyramid[CUBE_NUM];
+	SceneObject* objects[OBJ_NUM];
+	SceneObject* staticObj[OBJ_NUM];
 };

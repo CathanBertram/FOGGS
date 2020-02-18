@@ -1,6 +1,6 @@
 #include "FlyingObjects.h"
 
-FlyingObjects::FlyingObjects(Mesh* mesh, float x, float y, float z, float rx, float ry, float rz, float rotate)
+FlyingObjects::FlyingObjects(Mesh* mesh, float x, float y, float z, float rx, float ry, float rz, float rotate) : SceneObject(mesh)
 {
 	_position.x = x;
 	_position.y = y;
@@ -10,7 +10,6 @@ FlyingObjects::FlyingObjects(Mesh* mesh, float x, float y, float z, float rx, fl
 	_rotation.z = rz;
 	rotation = rotate;
 	rotationSpeed = rotate;
-	_mesh = mesh;
 }
 
 
@@ -50,44 +49,4 @@ void FlyingObjects::Update()
 	{
 		_position.z = 100.0f;
 	}
-}
-
-bool FlyingObjects::Load(char* path)
-{
-	/*std::ifstream inFile;
-	inFile.open(path);
-	if (!inFile.good())
-	{
-		std::cerr << "Cant open text file" << path << std::endl;
-		return false;
-	}
-
-	inFile >> numVertices;
-	indexedVertices = new Vertex[numVertices];
-	for (int i = 0; i < numVertices; i++)
-	{
-		inFile >> indexedVertices[i].x;
-		inFile >> indexedVertices[i].y;
-		inFile >> indexedVertices[i].z;
-	}
-
-	inFile >> numColors;
-	indexedColors = new Color[numColors];
-	for (int i = 0; i < numVertices; i++)
-	{
-		inFile >> indexedColors[i].r;
-		inFile >> indexedColors[i].g;
-		inFile >> indexedColors[i].b;
-	}
-	
-	inFile >> numIndices;
-	indices = new GLushort[numIndices];
-	for (int i = 0; i < numIndices; i++)
-	{
-		inFile >> indices[i];
-	}
-
-	inFile.close();
-	return true;*/
-	return false;
 }

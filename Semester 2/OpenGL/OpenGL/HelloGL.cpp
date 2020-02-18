@@ -19,22 +19,21 @@ HelloGL::~HelloGL()
 {
 	delete camera;
 	camera = nullptr;
-	for (int i = 0; i < CUBE_NUM; i++)
+	for (int i = 0; i < OBJ_NUM; i++)
 	{
-		delete cube[i];
-		cube[i] = nullptr;
+		delete objects[i];
+		objects[i] = nullptr;
 	}
-	delete cube;
+	delete objects;
 }
 
 void HelloGL::Display()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	for (int i = 0; i < CUBE_NUM; i++)
+	for (int i = 0; i < OBJ_NUM; i++)
 	{
-	cube[i]->Draw();
-	cube2[i]->Draw();
-	pyramid[i]->Draw();
+		objects[i]->Draw();
+		staticObj[i]->Draw();
 	}
 	glFlush();
 	glutSwapBuffers();
@@ -145,14 +144,12 @@ void HelloGL::InitObjects()
 	//Initialise Camera
 	camera = new Camera();
 	//Initialise Cube
-	Mesh* cubeMesh = MeshLoader::Load((char*)"OBJs/cube.txt");
-	Mesh* cube2Mesh = MeshLoader::Load((char*)"OBJs/cube2.txt");
-	Mesh* pyramidMesh = MeshLoader::Load((char*)"OBJs/pyramid.txt");
-	for (int i = 0; i < CUBE_NUM; i++)
+	Mesh* cubeMesh = MeshLoader::Load((char*)"OBJs/cube2.txt");
+	Mesh* pyrMesh = MeshLoader::Load((char*)"OBJs/pyramid.txt");
+	for (int i = 0; i < OBJ_NUM; i++)
 	{
-		cube[i] = new FlyingObjects(cubeMesh,((rand() % 100) / 5.0f) - 10.0f, ((rand() % 100) / 5.0f) - 10.0f, (rand() % 1200) / 10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));
-		cube2[i] = new FlyingObjects(cube2Mesh, ((rand() % 100) / 5.0f) - 10.0f, ((rand() % 100) / 5.0f) - 10.0f, (rand() % 1200) / 10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));
-		pyramid[i] = new FlyingObjects(pyramidMesh, ((rand() % 100) / 5.0f) - 10.0f, ((rand() % 100) / 5.0f) - 10.0f, (rand() % 1200) / 10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));
+		objects[i] = new FlyingObjects(cubeMesh,((rand() % 100) / 5.0f) - 10.0f, ((rand() % 100) / 5.0f) - 10.0f, (rand() % 1200) / 10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));
+		staticObj[i] = new StaticObjects(pyrMesh, ((rand() % 100) / 5.0f) - 10.0f, ((rand() % 100) / 5.0f) - 10.0f, (rand() % 1200) / 10.0f);
 	}
 	//Initialise Camera Variables
 	camera->eye.x = 0.0f; camera->eye.y = 0.0f; camera->eye.z = -5.0f;
@@ -190,11 +187,10 @@ void HelloGL::Update()
 	gluLookAt(camera->eye.x, camera->eye.y, camera->eye.z, 
 			camera->center.x, camera->center.y, camera->center.z, 
 			camera->up.x, camera->up.y, camera->up.z);
-	for (int i = 0; i < CUBE_NUM; i++)
+	for (int i = 0; i < OBJ_NUM; i++)
 	{
-		cube[i]->Update();
-		cube2[i]->Update();
-		pyramid[i]->Update();
+		objects[i]->Update();
+		staticObj[i]->Update();
 	}
 
 	glutPostRedisplay();
