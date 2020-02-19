@@ -148,6 +148,7 @@ void HelloGL::InitObjects()
 	Mesh* pyrMesh = MeshLoader::Load((char*)"OBJs/pyramid.txt");
 	Texture2D* cubeTexture = new Texture2D();
 	cubeTexture->Load((char*)"Textures/penguins.raw", 512, 512);
+	
 	for (int i = 0; i < OBJ_NUM; i++)
 	{
 		objects[i] = new FlyingObjects(cubeMesh, cubeTexture, ((rand() % 100) / 5.0f) - 10.0f, ((rand() % 100) / 5.0f) - 10.0f, (rand() % 1200) / 10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));

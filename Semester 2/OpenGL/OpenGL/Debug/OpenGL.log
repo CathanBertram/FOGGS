@@ -1,2 +1,13 @@
-﻿  Texture2D.cpp
+﻿  main.cpp
+  HelloGL.cpp
+D:\GITHUB\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(27,16): warning C4156: deletion of an array expression without using the array form of 'delete'; array form substituted
+D:\GITHUB\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(27,16): warning C4154: deletion of an array expression; conversion to pointer supplied
+D:\GITHUB\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(154,223): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(154,202): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GITHUB\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(154,181): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  GlutCallbacks.cpp
+  MeshLoader.cpp
+  Texture2D.cpp
+  Generating Code...
+D:\GITHUB\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(154,160): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   OpenGL.vcxproj -> D:\GITHUB\FOGGS\Semester 2\OpenGL\Debug\OpenGL.exe

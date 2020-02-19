@@ -9,7 +9,7 @@
 #include "MeshLoader.h"
 #include "SceneObject.h"
 #include "StaticObjects.h"
-#include  "Texture2D.h"
+#include "Texture2D.h"
 
 #define REFRESHRATE 60
 #define OBJ_NUM 200
