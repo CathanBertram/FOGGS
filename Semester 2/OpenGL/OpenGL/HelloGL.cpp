@@ -144,11 +144,13 @@ void HelloGL::InitObjects()
 	//Initialise Camera
 	camera = new Camera();
 	//Initialise Cube
-	Mesh* cubeMesh = MeshLoader::Load((char*)"OBJs/cube2.txt");
+	TexturedMesh* cubeMesh = MeshLoader::LoadTex((char*)"Textures/Cube.txt");
 	Mesh* pyrMesh = MeshLoader::Load((char*)"OBJs/pyramid.txt");
+	Texture2D* cubeTexture = new Texture2D();
+	cubeTexture->Load((char*)"Textures/penguins.raw", 512, 512);
 	for (int i = 0; i < OBJ_NUM; i++)
 	{
-		objects[i] = new FlyingObjects(cubeMesh,((rand() % 100) / 5.0f) - 10.0f, ((rand() % 100) / 5.0f) - 10.0f, (rand() % 1200) / 10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));
+		objects[i] = new FlyingObjects(cubeMesh, cubeTexture, ((rand() % 100) / 5.0f) - 10.0f, ((rand() % 100) / 5.0f) - 10.0f, (rand() % 1200) / 10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));
 		staticObj[i] = new StaticObjects(pyrMesh, ((rand() % 100) / 5.0f) - 10.0f, ((rand() % 100) / 5.0f) - 10.0f, (rand() % 1200) / 10.0f);
 	}
 	//Initialise Camera Variables
@@ -179,6 +181,8 @@ void HelloGL::InitGL(int argc, char* argv[])
 	//Backface Culling
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+	//Enable Texturing
+	glEnable(GL_TEXTURE_2D);
 }
 
 void HelloGL::Update()

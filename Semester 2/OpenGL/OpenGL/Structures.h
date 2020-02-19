@@ -31,6 +31,12 @@ struct Vertex
 	GLfloat x, y, z;
 };
 
+struct TexCoords
+{
+	GLfloat u;
+	GLfloat v;
+};
+
 struct Mesh
 {
 	Vertex* vertices;
@@ -38,3 +44,14 @@ struct Mesh
 	GLushort* indices;
 	int vertexCount, colorCount, indexCount;
 };
+
+struct TexturedMesh
+{
+	Mesh* mesh;
+	int texCoordCount;
+	TexCoords* TexCoords;
+};
+
+
+
+
