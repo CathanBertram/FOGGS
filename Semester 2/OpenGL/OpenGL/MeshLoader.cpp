@@ -10,11 +10,6 @@ namespace MeshLoader
 	void LoadVertices(ifstream& inFile, Mesh& mesh);
 	void LoadColours(ifstream& inFile, Mesh& mesh);
 	void LoadIndices(ifstream& inFile, Mesh& mesh);
-
-	void LoadTexVertices(ifstream& inFile, TexturedMesh& mesh);
-	void LoadTexColours(ifstream& inFile, TexturedMesh& mesh);
-	void LoadTexIndices(ifstream& inFile, TexturedMesh& mesh);
-	void LoadTexCoords(ifstream& inFile, TexturedMesh& mesh);
 	
 	void LoadVertices(ifstream& inFile, Mesh& mesh)
 	{

@@ -25,6 +25,8 @@ HelloGL::~HelloGL()
 		objects[i] = nullptr;
 	}
 	delete objects;
+
+	
 }
 
 void HelloGL::Display()
@@ -147,7 +149,7 @@ void HelloGL::InitObjects()
 	TexturedMesh* cubeMesh = MeshLoader::LoadTex((char*)"Textures/Cube.txt");
 	Mesh* pyrMesh = MeshLoader::Load((char*)"OBJs/pyramid.txt");
 	Texture2D* cubeTexture = new Texture2D();
-	cubeTexture->Load((char*)"Textures/penguins.raw", 512, 512);
+	cubeTexture->Load((char*)"Textures/stars.raw", 512, 512);
 	
 	for (int i = 0; i < OBJ_NUM; i++)
 	{

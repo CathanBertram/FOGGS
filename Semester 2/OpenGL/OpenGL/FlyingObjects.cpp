@@ -24,13 +24,14 @@ void FlyingObjects::Draw()
 	{
 		glBindTexture(GL_TEXTURE_2D, _texture->GetID());
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);
+
 		glVertexPointer(3, GL_FLOAT, 0, _texMesh->mesh->vertices);
 		glColorPointer(3, GL_FLOAT, 0, _texMesh->mesh->colors);
-
 		glTexCoordPointer(2, GL_FLOAT, 0, _texMesh->TexCoords);
 
 		glPushMatrix();
