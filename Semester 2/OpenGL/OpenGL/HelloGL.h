@@ -45,6 +45,7 @@ public:
 
 	//Init Functions
 	void InitObjects();
+	void InitLight();
 	void InitGL(int argc, char* argv[]);
 
 	void Update();
@@ -62,4 +63,7 @@ private:
 	Camera* camera;
 	SceneObject* objects[OBJ_NUM];
 	SceneObject* staticObj[OBJ_NUM];
+
+	Vector4* _lightPos;
+	Lighting* _lightData;
 };

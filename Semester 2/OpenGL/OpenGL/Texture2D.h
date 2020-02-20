@@ -5,7 +5,6 @@
 #include "GL\freeglut.h"
 #include <fstream>
 #include <iostream>
-
 class Texture2D
 {
 private:

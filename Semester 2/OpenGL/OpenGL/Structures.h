@@ -51,7 +51,7 @@ struct Mesh
 	Color* colors;
 	Vector3* normals;
 	GLushort* indices;
-	int vertexCount, colorCount, indexCount;
+	int vertexCount, colorCount, indexCount, normalCount;
 };
 
 struct TexturedMesh
@@ -63,17 +63,17 @@ struct TexturedMesh
 
 struct Lighting
 {
-	Vector4 ambient;
-	Vector4 diffuse;
-	Vector4 specular;
+	Vector4 Ambient;
+	Vector4 Diffuse;
+	Vector4 Specular;
 };
 
 struct Material
 {
-	Vector4 ambient;
-	Vector4 diffuse;
-	Vector4 specular;
-	GLfloat shininess;
+	Vector4 Ambient;
+	Vector4 Diffuse;
+	Vector4 Specular;
+	GLfloat Shininess;
 };
 
 

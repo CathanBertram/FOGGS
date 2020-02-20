@@ -123,8 +123,8 @@ Bitmap::~Bitmap()
 
 // FUNCTION:									export_rgb_data
 // COMPANY:										Staffordshire University - School of Computing and Digital Technologies - Games and Visual Effects
-// VERSION:										1.0
-// DATE:                                        10/02/2020
+// VERSION:										1.1
+// DATE:                                        10/02/2020 | V1.1 17/02/2020
 // PURPOSE:                                     Write the pixel array out to file at location given by string parameter
 // PARAMETERS:                                  std::string File path, name, extension to write to
 // RETURN:                                      int 0 - success | 7 - Error opening to write | 8 - Error during write |
@@ -133,6 +133,8 @@ Bitmap::~Bitmap()
 // KEY FUNCTIONS AND LIBRARIES:                 fstream
 // MODIFICATIONS AND NOTES:                     Will create or overwrite file. Developer should ensure that load_bitmap_file is called prior to
 //                                              making a call to this function to avoid an error
+//
+//                                              V1.1 - Modified to ensure output is binary type, .write replaces streaming op - LDE
 int Bitmap::export_rgb_data(std::string strRGBDataFileToWrite)
 {
     // Local Variables
@@ -143,7 +145,7 @@ int Bitmap::export_rgb_data(std::string strRGBDataFileToWrite)
     if(!this->vecColourBuff.empty())
     {
         // Open the file for output
-        streamFileWrite.open(strRGBDataFileToWrite);
+        streamFileWrite.open(strRGBDataFileToWrite, std::ios::binary);
 
         if(streamFileWrite.is_open() && streamFileWrite.good())
         {
@@ -151,9 +153,7 @@ int Bitmap::export_rgb_data(std::string strRGBDataFileToWrite)
             {
                 for(nCount = 0; nCount < this->vecColourBuff.size(); nCount++)
                 {
-                    streamFileWrite << this->vecColourBuff.at(nCount).r;
-                    streamFileWrite << this->vecColourBuff.at(nCount).g;
-                    streamFileWrite << this->vecColourBuff.at(nCount).b;
+                    streamFileWrite.write(reinterpret_cast<char *>(&this->vecColourBuff.at(nCount)), sizeof(FOGGS::Bitmap::BMPColourBuffer));
                 }
             }
             catch (std::ofstream::failure exceptWriteFile)

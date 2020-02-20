@@ -74,6 +74,22 @@ namespace MeshLoader
 		}
 	}
 
+	void LoadNormal(ifstream& inFile, TexturedMesh& mesh)
+	{
+		inFile >> mesh.mesh->normalCount;
+
+		if (mesh.mesh->normalCount > 0)
+		{
+			mesh.mesh->normals = new Vector3[mesh.mesh->normalCount];
+			for (int i = 0; i < mesh.mesh->normalCount; i++)
+			{
+				inFile >> mesh.mesh->normals[i].x;
+				inFile >> mesh.mesh->normals[i].y;
+				inFile >> mesh.mesh->normals[i].z;
+			}
+		}
+	}
+
 	Mesh* MeshLoader::Load(char* path)
 	{
 		Mesh* mesh = new Mesh();
@@ -111,8 +127,8 @@ namespace MeshLoader
 		}
 
 		LoadVertices(inFile, *texMesh->mesh);
-		LoadColours(inFile, *texMesh->mesh);
 		LoadTexCoords(inFile, *texMesh);
+		LoadNormal(inFile, *texMesh);
 		LoadIndices(inFile, *texMesh->mesh);
 
 		return texMesh;

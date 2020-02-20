@@ -1,7 +1,14 @@
-﻿  FlyingObjects.cpp
-  HelloGL.cpp
-C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(27): warning C4156: deletion of an array expression without using the array form of 'delete'; array form substituted
-C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(27): warning C4154: deletion of an array expression; conversion to pointer supplied
-C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(156): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Generating Code...
+﻿  HelloGL.cpp
+C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(28): warning C4156: deletion of an array expression without using the array form of 'delete'; array form substituted
+C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(28): warning C4154: deletion of an array expression; conversion to pointer supplied
+C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(155): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(172): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(173): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(174): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(176): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(177): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(178): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(180): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(181): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\OpenGL\HelloGL.cpp(182): warning C4305: '=': truncation from 'double' to 'float'
   OpenGL.vcxproj -> C:\Users\b012521i\Documents\GitHub\FOGGS\Semester 2\OpenGL\Debug\OpenGL.exe

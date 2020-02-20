@@ -4,6 +4,7 @@ HelloGL::HelloGL(int argc, char* argv[])
 {
 	InitGL(argc, argv);
 	InitObjects();
+	InitLight();
 
 	//Initialise Other Variables
 	rotation = 0.0f;
@@ -35,7 +36,6 @@ void HelloGL::Display()
 	for (int i = 0; i < OBJ_NUM; i++)
 	{
 		objects[i]->Draw();
-		staticObj[i]->Draw();
 	}
 	glFlush();
 	glutSwapBuffers();
@@ -146,20 +146,42 @@ void HelloGL::InitObjects()
 	//Initialise Camera
 	camera = new Camera();
 	//Initialise Cube
-	TexturedMesh* cubeMesh = MeshLoader::LoadTex((char*)"Textures/Cube.txt");
-	Mesh* pyrMesh = MeshLoader::Load((char*)"OBJs/pyramid.txt");
+	TexturedMesh* cubeMesh = MeshLoader::LoadTex((char*)"OBJs/CubeLight.txt");
 	Texture2D* cubeTexture = new Texture2D();
 	cubeTexture->Load((char*)"Textures/stars.raw", 512, 512);
 	
 	for (int i = 0; i < OBJ_NUM; i++)
 	{
-		objects[i] = new FlyingObjects(cubeMesh, cubeTexture, ((rand() % 100) / 5.0f) - 10.0f, ((rand() % 100) / 5.0f) - 10.0f, (rand() % 1200) / 10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));
-		staticObj[i] = new StaticObjects(pyrMesh, ((rand() % 100) / 5.0f) - 10.0f, ((rand() % 100) / 5.0f) - 10.0f, (rand() % 1200) / 10.0f);
+		objects[i] = new FlyingObjects(cubeMesh, cubeTexture, ((rand() % 100) / 5.0f) - 10.0f, ((rand() % 100) / 5.0f) - 10.0f, -(rand() % 1200) / 10.0f, rand() % 20 + (-10), rand() % 20 + (-10), rand() % 20 + (-10), rand() % 10 + (-5));
 	}
 	//Initialise Camera Variables
-	camera->eye.x = 0.0f; camera->eye.y = 0.0f; camera->eye.z = -5.0f;
+	camera->eye.x = 0.0f; camera->eye.y = 0.0f; camera->eye.z = 5.0f;
 	camera->center.x = 0.0f; camera->center.y = 0.0f; camera->center.z = 0.0f;
 	camera->up.x = 0.0f; camera->up.y = 1.0f; camera->up.z = 0.0f;
+}
+
+void HelloGL::InitLight()
+{
+	_lightPos = new Vector4();
+	_lightPos->x = 0.0;
+	_lightPos->y = 0.0;
+	_lightPos->z = 1.0;
+	_lightPos->w = 0.0;
+
+	_lightData = new Lighting();
+	_lightData->Ambient.x = 0.2;
+	_lightData->Ambient.y = 0.2;
+	_lightData->Ambient.z = 0.2;
+	_lightData->Ambient.w = 1.0;
+	_lightData->Diffuse.x = 0.8;
+	_lightData->Diffuse.y = 0.8;
+	_lightData->Diffuse.z = 0.8;
+	_lightData->Diffuse.w = 1.0;
+	_lightData->Specular.x = 0.2;
+	_lightData->Specular.y = 0.2;
+	_lightData->Specular.z = 0.2;
+	_lightData->Specular.w = 1.0;
+
 }
 
 void HelloGL::InitGL(int argc, char* argv[])
@@ -186,6 +208,9 @@ void HelloGL::InitGL(int argc, char* argv[])
 	glCullFace(GL_BACK);
 	//Enable Texturing
 	glEnable(GL_TEXTURE_2D);
+	//Enable Lighting
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
 }
 
 void HelloGL::Update()
@@ -194,10 +219,16 @@ void HelloGL::Update()
 	gluLookAt(camera->eye.x, camera->eye.y, camera->eye.z, 
 			camera->center.x, camera->center.y, camera->center.z, 
 			camera->up.x, camera->up.y, camera->up.z);
+
+	glLightfv(GL_LIGHT0, GL_AMBIENT, &(_lightData->Ambient.x));
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, &(_lightData->Diffuse.x));
+	glLightfv(GL_LIGHT0, GL_SPECULAR, &(_lightData->Specular.x));
+
+	glLightfv(GL_LIGHT0, GL_POSITION, &(_lightPos->x));
+
 	for (int i = 0; i < OBJ_NUM; i++)
 	{
 		objects[i]->Update();
-		staticObj[i]->Update();
 	}
 
 	glutPostRedisplay();

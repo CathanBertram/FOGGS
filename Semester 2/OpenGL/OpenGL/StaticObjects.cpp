@@ -16,9 +16,9 @@ void StaticObjects::Draw()
 	if (_mesh->vertices != nullptr && _mesh->colors != nullptr && _mesh->indices != nullptr)
 	{
 		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_COLOR_ARRAY);
+		glEnableClientState(GL_NORMAL_ARRAY);
 		glVertexPointer(3, GL_FLOAT, 0, _mesh->vertices);
-		glColorPointer(3, GL_FLOAT, 0, _mesh->colors);
+		glNormalPointer(GL_FLOAT, 0, _texMesh->mesh->normals);
 
 		glPushMatrix();
 		glTranslatef(_position.x, _position.y, _position.z);

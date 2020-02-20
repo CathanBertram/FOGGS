@@ -15,5 +15,8 @@ private:
 	Vector3 _rotation;
 	float rotation;
 	float rotationSpeed;
+	Material* _material;
+
+	void LoadMat();
 };
 
